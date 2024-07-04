@@ -4,7 +4,7 @@ import React from "react";
 const Preview = () => {
   return (
     <View>
-      <Text>Preview</Text>
+      <Text>Preview screen</Text>
     </View>
   );
 };
