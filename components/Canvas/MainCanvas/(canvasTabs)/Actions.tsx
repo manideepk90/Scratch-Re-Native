@@ -1,14 +1,25 @@
-import { Text, View } from 'react-native'
-import React, { Component } from 'react'
+import { View, Text, StyleSheet } from "react-native";
+import React from "react";
+import CodePanel from "../../Components/CodePanel";
+import ActionsCanvas from "./ActionsCanvas";
 
-export class Actions extends Component {
-  render() {
-    return (
-      <View>
-        <Text>Actions</Text>
-      </View>
-    )
-  }
-}
+const Actions = () => {
+  return (
+    <View style={styles.container}>
+      <ActionsCanvas />
+      <CodePanel />
+    </View>
+  );
+};
 
-export default Actions
+const styles = StyleSheet.create({
+  container: {
+    flex: 3,
+    width: "100%",
+    position: "relative",
+    borderRadius: 4,
+    gap: 5,
+  },
+});
+
+export default Actions;

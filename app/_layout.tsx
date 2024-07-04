@@ -1,6 +1,6 @@
 import React from "react";
 
-import { useColorScheme } from "@/hooks/useColorScheme";
+// import { useColorScheme } from "@/hooks/useColorScheme";
 import TopAppBar from "@/components/navigation/TopAppBar";
 import { View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -9,27 +9,29 @@ import CanvasView from "@/components/Canvas/CanvasView";
 import "react-native-gesture-handler";
 
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import MainContextProvider from "@/hooks/MainContextProvider";
 
 export default function TabLayout() {
-  // const colorScheme = useColorScheme();
   const insets = useSafeAreaInsets();
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <View
-        style={{
-          marginTop: insets.top,
-          paddingBottom: insets.bottom + 44,
-          backgroundColor: "#F9B353",
-          height: "100%",
-          padding: 5,
-          gap: 5,
-          justifyContent: "space-between",
-        }}
-      >
-        <TopAppBar />
-        <CanvasView />
-        <SpritesComponent />
-      </View>
+      <MainContextProvider>
+        <View
+          style={{
+            marginTop: insets.top,
+            paddingBottom: insets.bottom + 44,
+            backgroundColor: "#F9B353",
+            height: "100%",
+            padding: 5,
+            gap: 5,
+            justifyContent: "space-between",
+          }}
+        >
+          <TopAppBar />
+          <CanvasView />
+          <SpritesComponent />
+        </View>
+      </MainContextProvider>
     </GestureHandlerRootView>
   );
 }
