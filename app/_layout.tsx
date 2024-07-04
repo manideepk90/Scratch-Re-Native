@@ -1,37 +1,30 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
+import React from "react";
 
-import { useColorScheme } from '@/hooks/useColorScheme';
+import { useColorScheme } from "@/hooks/useColorScheme";
+import TopAppBar from "@/components/navigation/TopAppBar";
+import { View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import SpritesComponent from "@/components/Sprites/SpritesComponent";
+import CanvasView from "@/components/Canvas/CanvasView";
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
-
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
-
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
-
-  if (!loaded) {
-    return null;
-  }
-
+export default function TabLayout() {
+  // const colorScheme = useColorScheme();
+  const insets = useSafeAreaInsets();
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-    </ThemeProvider>
+    <View
+      style={{
+        marginTop: insets.top,
+        paddingBottom: insets.bottom + 44,
+        backgroundColor: "#F9B353",
+        height: "100%",
+        padding: 5,
+        gap: 5,
+        justifyContent: "space-between",
+      }}
+    >
+      <TopAppBar />
+      <CanvasView />
+      <SpritesComponent />
+    </View>
   );
 }
