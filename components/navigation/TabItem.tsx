@@ -9,7 +9,7 @@ const TabItem = ({
   label?: string;
   path?: string;
 }) => {
-  const { active, setPath } = getTabContext();
+  const { activeTab, setPath } = getTabContext();
   return (
     <TouchableOpacity
       onPress={() => setPath(path)}
@@ -18,7 +18,7 @@ const TabItem = ({
         justifyContent: "center",
         alignItems: "center",
         height: "100%",
-        backgroundColor: active === path ? "#FFAB19" : "transparent",
+        backgroundColor: activeTab === path ? "#FFAB19" : "transparent",
         borderRadius: 2,
       }}
     >

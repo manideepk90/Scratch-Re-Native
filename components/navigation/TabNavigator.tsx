@@ -7,7 +7,7 @@ const TabNavigator = () => {
   return (
     <View style={styles.container}>
       <TabItem label={"Preview"} path={"preview"} />
-      <VerticalLine />
+      <VerticalLine color="green" />
       <TabItem label={"Actions"} path={"actions"} />
     </View>
   );
@@ -15,15 +15,15 @@ const TabNavigator = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 0,
     width: "100%",
-    position: "absolute",
-    bottom: 0,
+    // position: "absolute",
+    // bottom: 0,a
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     backgroundColor: "#FDE4BE",
-    minHeight: 50,
+    height: 50,
     gap: 4,
     margin: 4,
     borderRadius: 4,

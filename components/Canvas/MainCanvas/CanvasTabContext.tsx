@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState } from "react";
 export const canvasTabContext = createContext({
-  active: "preview",
+  activeTab: "preview",
   paths: { preview: "Preview", actions: "Actions" },
   setPath: (path: string) => {},
 });
@@ -10,12 +10,12 @@ export default function CanvasTabProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [active, setActive] = useState("preview");
+  const [activeTab, setActive] = useState("preview");
 
   return (
     <canvasTabContext.Provider
       value={{
-        active,
+        activeTab,
         paths: { preview: "Preview", actions: "Actions" },
         setPath: setActive,
       }}

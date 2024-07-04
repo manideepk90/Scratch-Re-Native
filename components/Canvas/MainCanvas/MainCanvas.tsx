@@ -3,11 +3,13 @@ import React from "react";
 
 import CanvasTabProvider from "./CanvasTabContext";
 import TabNavigator from "@/components/navigation/TabNavigator";
+import PanelView from "./(canvasTabs)/PanelView";
 
 function MainCanvas() {
   return (
     <View style={styles.container}>
       <CanvasTabProvider>
+        <PanelView />
         <TabNavigator />
       </CanvasTabProvider>
     </View>
@@ -17,16 +19,15 @@ function MainCanvas() {
 const styles = StyleSheet.create({
   container: {
     position: "relative",
-    bottom: 0,
-    flex: 3,
-    backgroundColor: "#FFF0D9",
+    flex: 4,
+    backgroundColor: "#ffffff",
     width: "100%",
     minHeight: 56,
     height: 100,
     borderRadius: 4,
-    overflow: "hidden",
     alignItems: "center",
     padding: 4,
+    justifyContent: "space-between",
   },
 });
 
