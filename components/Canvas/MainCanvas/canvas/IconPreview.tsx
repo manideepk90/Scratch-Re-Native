@@ -3,7 +3,7 @@ import React from "react";
 import { useMainContextProvider } from "@/hooks/MainContextProvider";
 
 const IconPreview = () => {
-  const {  selectedSprite } = useMainContextProvider();
+  const { selectedSprite } = useMainContextProvider();
 
   return (
     <View style={styles.container}>
@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#e4e4e4",
     justifyContent: "center",
     alignItems: "center",
-    zIndex: 10,
+    zIndex: 0,
   },
   image: {
     width: 40,

@@ -52,7 +52,6 @@ const styles = StyleSheet.create({
   scrollContainer: {
     zIndex: 1,
     flex: 3,
-    backgroundColor: "green",
     borderRadius: 4,
     position: "relative",
     alignItems: "flex-start",
