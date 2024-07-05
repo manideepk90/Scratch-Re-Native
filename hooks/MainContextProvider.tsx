@@ -5,6 +5,7 @@ import React, {
   Dispatch,
   ReactNode,
   SetStateAction,
+  useCallback,
   useContext,
   useState,
 } from "react";
@@ -12,9 +13,11 @@ import React, {
 type MainContextType = {
   sprites: Sprite[];
   setSprites: Dispatch<SetStateAction<Sprite[]>>;
-  selectedSprite: Sprite;
-  setSelectedSprite: Dispatch<SetStateAction<Sprite>>;
-  deleteSprite: (idx: number | undefined) => void;
+  selectedSprite: Sprite | null;
+  setSelectedSprite: Dispatch<SetStateAction<Sprite | null>>;
+  deleteSprite: (sprite: Sprite | undefined) => void;
+  setDefaultSelection: () => void;
+  addSprite: (sprite: Sprite) => void;
 };
 
 const defaultContext: MainContextType = {
@@ -22,7 +25,9 @@ const defaultContext: MainContextType = {
   setSprites: () => {},
   selectedSprite: new Sprite(AvailableSprites[0]),
   setSelectedSprite: () => {},
-  deleteSprite: (idx: number | undefined) => {},
+  deleteSprite: (sprite: Sprite | undefined) => {},
+  addSprite: (sprite: Sprite) => {},
+  setDefaultSelection: () => {},
 };
 
 export const MainContext = createContext<MainContextType>(defaultContext);
@@ -32,17 +37,27 @@ export const useMainContextProvider = () => useContext(MainContext);
 const MainContextProvider = ({ children }: { children: ReactNode }) => {
   const [sprites, setSprites] = useState<Sprite[]>([
     new Sprite(AvailableSprites[0]),
-    new Sprite(AvailableSprites[1]),
-    new Sprite(AvailableSprites[2]),
-    new Sprite(AvailableSprites[3]),
-    new Sprite(AvailableSprites[4]),
   ]);
-  const [selectedSprite, setSelectedSprite] = useState<Sprite>(sprites[0]);
+  const [selectedSprite, setSelectedSprite] = useState<Sprite | null>(
+    sprites[0]
+  );
 
-  const deleteSprite = (idx: number | undefined) => {
-    if (idx === undefined) return;
-    setSprites(sprites.filter((_, i) => i !== idx));
+  const deleteSprite = (sprite: Sprite | undefined) => {
+    if (sprite === undefined) return;
+    setSprites((prev) => prev.filter((e, i) => e.getId() !== sprite.getId()));
   };
+
+  const addSprite = (sprite: Sprite) => {
+    setSprites((prev) => [...prev, sprite]);
+  };
+
+  const setDefaultSelection = useCallback(() => {
+    if (sprites.length > 0) {
+      setSelectedSprite(sprites[0]);
+    } else {
+      setSelectedSprite(null);
+    }
+  }, [sprites]);
 
   return (
     <MainContext.Provider
@@ -51,7 +66,9 @@ const MainContextProvider = ({ children }: { children: ReactNode }) => {
         setSprites,
         selectedSprite,
         setSelectedSprite,
+        setDefaultSelection,
         deleteSprite,
+        addSprite,
       }}
     >
       {children}

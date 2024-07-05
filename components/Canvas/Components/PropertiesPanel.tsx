@@ -1,16 +1,89 @@
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 import React from "react";
 import PropertiesItem from "./PropertiesItem";
+import { useMainContextProvider } from "@/hooks/MainContextProvider";
+
 const PropertiesPanel = () => {
+  const { selectedSprite, setSelectedSprite, sprites, setSprites } =
+    useMainContextProvider();
   return (
     <View style={styles.container}>
       <ScrollView horizontal style={{ height: 56 }}>
         <View style={styles.scrollView}>
-          <PropertiesItem label="Sprite Name" />
-          <PropertiesItem label="Size" type="number" />
-          <PropertiesItem label="X" type="number" />
-          <PropertiesItem label="Y" type="number" />
-          <PropertiesItem label="Direction" type="number" />
+          <PropertiesItem
+            label="Sprite Name"
+            value={selectedSprite?.getName()}
+            setValue={(value: string) => {
+              setSprites((prev) => {
+                return prev.map((e) => {
+                  if (e.getId() === selectedSprite?.getId()) {
+                    e.setName(value);
+                  }
+                  return e;
+                });
+              });
+            }}
+          />
+          <PropertiesItem
+            label="Size"
+            type="number"
+            value={selectedSprite?.getSize()?.toString() || "0"}
+            setValue={(value: string) => {
+              setSprites((prev) => {
+                return prev.map((e) => {
+                  if (e.getId() === selectedSprite?.getId()) {
+                    e.setSize(Number.parseInt(value) || 0);
+                  }
+                  return e;
+                });
+              });
+            }}
+          />
+          <PropertiesItem
+            label="X"
+            type="number"
+            value={selectedSprite?.getX()?.toLocaleString() || "0"}
+            setValue={(value: string) => {
+              setSprites((prev) => {
+                return prev.map((e) => {
+                  if (e.getId() === selectedSprite?.getId()) {
+                    e.setX(Number.parseInt(value) || 0);
+                  }
+                  return e;
+                });
+              });
+            }}
+          />
+          <PropertiesItem
+            label="Y"
+            type="number"
+            value={selectedSprite?.getY()?.toLocaleString() || "0"}
+            setValue={(value: string) => {
+              setSprites((prev) => {
+                return prev.map((e) => {
+                  if (e.getId() === selectedSprite?.getId()) {
+                    e.setY(Number.parseInt(value) || 0);
+                  }
+                  return e;
+                });
+              });
+            }}
+          />
+          <PropertiesItem
+            label="Direction"
+            type="number"
+            value={selectedSprite?.getDirection()?.toString() || "0"}
+            setValue={(value: string) => {
+              setSprites((prev) => {
+                return prev.map((e) => {
+                  if (e.getId() === selectedSprite?.getId()) {
+                    e.setDirection(Number.parseInt(value) || 0);
+                  }
+                  return e;
+                });
+              });
+            }}
+          />
         </View>
       </ScrollView>
     </View>

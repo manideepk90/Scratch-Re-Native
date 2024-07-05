@@ -1,16 +1,17 @@
 import React from "react";
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import SpriteItem from "./SpriteItem";
 import { useMainContextProvider } from "@/hooks/MainContextProvider";
 import DraggableFlatList from "react-native-draggable-flatlist";
 import Sprite from "@/lib/Sprite";
-function SpritesComponent() {
+import AddSprite from "./AddSprite";
+import { addIcon } from "@/constants/icons";
+
+interface props {
+  notAddable?: boolean;
+}
+
+function SpritesComponent({ notAddable = false }: props) {
   const { sprites, setSprites } = useMainContextProvider();
   const renderItem = ({
     item,
@@ -18,17 +19,20 @@ function SpritesComponent() {
     isActive,
     getIndex,
   }: {
-    item: Sprite;
+    item: any;
     drag: () => void;
     isActive: boolean;
     getIndex: () => number | undefined;
   }) => {
-    return (
+    return item.getName() === "special-add-non-actionable-sprite" ? (
+      !notAddable && <AddSprite />
+    ) : (
       <SpriteItem
-        key={item.getName()}
+        key={item.getId()}
         sprite={item}
         index={getIndex()}
         longPress={drag}
+        isActivelyDragging={isActive}
       />
     );
   };
@@ -43,9 +47,18 @@ function SpritesComponent() {
             gap: 10,
             padding: 10,
           }}
-          data={sprites}
+          data={[
+            ...sprites.filter(
+              (sprite) =>
+                sprite.getName() !== "special-add-non-actionable-sprite"
+            ),
+            new Sprite({
+              name: "special-add-non-actionable-sprite",
+              icon: addIcon,
+            }),
+          ]}
           renderItem={renderItem}
-          keyExtractor={(item) => item.getName()}
+          keyExtractor={(item) => item.getId()}
           horizontal
           onDragEnd={({ data }) => setSprites(data)}
           containerStyle={{ gap: 10 }}
@@ -70,7 +83,7 @@ const styles = StyleSheet.create({
     overflow: "scroll",
   },
   scrollContainer: {
-    backgroundColor: "#FFF0D9",
+    // backgroundColor: "#FFF0D9",
     flex: 1,
     height: "100%",
     flexDirection: "row",

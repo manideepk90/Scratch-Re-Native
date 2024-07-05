@@ -1,18 +1,23 @@
-import { menuIcon, textLogo } from "@/constants/icons";
-import React, { useState } from "react";
-import {
-  Button,
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from "react-native";
-function TopAppBar() {
+import { backIcon, menuIcon, textLogo } from "@/constants/icons";
+import { router } from "expo-router";
+import React from "react";
+import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
+
+interface props {
+  isBack?: boolean;
+}
+
+function TopAppBar({ isBack = false }: props) {
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.backdrop} onPress={() => {}}>
+      <TouchableOpacity
+        style={styles.backdrop}
+        onPress={() => {
+          isBack ? router.navigate("/Home") : () => {};
+        }}
+      >
         <View style={styles.modalContent}>
-          <Image source={menuIcon} />
+          <Image source={isBack ? backIcon : menuIcon} />
         </View>
       </TouchableOpacity>
 

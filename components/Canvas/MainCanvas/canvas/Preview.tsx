@@ -3,13 +3,19 @@ import React from "react";
 import PropertiesPanel from "../../Components/PropertiesPanel";
 import RunPanel from "../../Components/RunPanel";
 import PreviewCanvas from "./PreviewCanvas";
+import { useMainContextProvider } from "@/hooks/MainContextProvider";
 
 const Preview = () => {
+  const { selectedSprite } = useMainContextProvider();
   return (
     <View style={styles.container}>
       <PreviewCanvas />
-      <RunPanel />
-      <PropertiesPanel />
+      {selectedSprite && (
+        <>
+          {selectedSprite.getActions().length > 0 && <RunPanel />}
+          <PropertiesPanel />
+        </>
+      )}
     </View>
   );
 };

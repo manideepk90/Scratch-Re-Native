@@ -1,11 +1,13 @@
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import React from "react";
+import InputBox from "@/components/Confirmation/InputBox";
 
 interface props {
   label?: string;
   value?: string | undefined;
-  setValue?: (value: string | undefined) => void;
+  setValue?: any;
   type?: string;
+  handleSave?: () => void;
 }
 
 const PropertiesItem = ({
@@ -13,19 +15,28 @@ const PropertiesItem = ({
   type = "text",
   value,
   setValue,
+  handleSave,
 }: props) => {
+  const [open, setOpen] = React.useState(false);
   return (
-    <View style={styles.container}>
+    <TouchableOpacity
+      style={styles.container}
+      onPress={() => {
+        setOpen(true);
+      }}
+    >
       <Text style={styles.actionLabel}>{label} : </Text>
-      <TextInput
-        style={styles.textInput}
+      <Text style={styles.textInput}>{value}</Text>
+      <InputBox
+        title={label}
+        open={open}
+        type={type}
+        handleClose={setOpen}
         value={value}
-        onChange={(e: any) => {
-          setValue && setValue(e.target.value);
-        }}
-        keyboardType={type === "text" ? "ascii-capable" : "numeric"}
+        setValue={setValue}
+        handleConfirm={handleSave}
       />
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -56,5 +67,6 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     fontSize: 16,
     paddingHorizontal: 10,
+    textAlign: "center",
   },
 });

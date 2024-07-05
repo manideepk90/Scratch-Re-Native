@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
 import React from "react";
 import { getTabContext } from "../CanvasTabContext";
 import Preview from "./Preview";
@@ -6,6 +6,7 @@ import Actions from "./Actions";
 
 const PanelView = () => {
   const { activeTab } = getTabContext();
+
   return activeTab === "preview" ? (
     <View style={styles.container}>
       <Preview />

@@ -1,11 +1,18 @@
-import { StyleSheet, Text, View } from "react-native";
-import React, { Component } from "react";
-import MainCanvas from "./MainCanvas/MainCanvas";
+import { StyleSheet, View } from "react-native";
+import React from "react";
+import CanvasTabProvider from "./MainCanvas/CanvasTabContext";
+import PanelView from "./MainCanvas/canvas/PanelView";
+import TabNavigator from "../navigation/TabNavigator";
 
 function CanvasView() {
   return (
     <View style={styles.container}>
-      <MainCanvas />
+      <View style={styles.mainContainer}>
+        <CanvasTabProvider>
+          <PanelView />
+          <TabNavigator />
+        </CanvasTabProvider>
+      </View>
     </View>
   );
 }
@@ -21,7 +28,18 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 4,
   },
-  scrollContainer: {},
+  mainContainer: {
+    position: "relative",
+    flex: 4,
+    // backgroundColor: "#ffffff",
+    width: "100%",
+    minHeight: 56,
+    height: 100,
+    borderRadius: 4,
+    alignItems: "center",
+    padding: 4,
+    justifyContent: "space-between",
+  },
 });
 
 export default CanvasView;
