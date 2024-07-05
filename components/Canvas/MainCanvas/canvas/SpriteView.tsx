@@ -1,5 +1,5 @@
-import { Image, StyleSheet } from "react-native";
-import React, { useEffect, useRef } from "react";
+import { Image, StyleSheet, TouchableOpacity } from "react-native";
+import React, { useEffect, useMemo, useState } from "react";
 import Sprite from "@/lib/Sprite";
 import Animated, {
   useAnimatedStyle,
@@ -40,10 +40,11 @@ const convertToXYCoordinates = (
 
 const SpriteView = ({ sprite, canvasArea }: Props) => {
   const spriteSize = sprite.getSize();
-  const { sprites, setSprites } = useMainContextProvider();
-
-  const styles = useRef(
-    StyleSheet.create({
+  const { sprites, setSprites, setSelectedSprite, selectedSprite } =
+    useMainContextProvider();
+  const [isInited, setIsInited] = useState(false);
+  const styles = useMemo(() => {
+    return StyleSheet.create({
       image: {
         width: "100%",
         height: "100%",
@@ -60,18 +61,29 @@ const SpriteView = ({ sprite, canvasArea }: Props) => {
         width: sprite.getSize(),
         height: sprite.getSize(),
       },
-    })
-  ).current;
+    });
+  }, [sprite.getDirection(), sprite.getSize(), sprites]);
 
   const translationX = useSharedValue(sprite.getX());
   const translationY = useSharedValue(sprite.getY());
   const prevTranslationX = useSharedValue(0);
   const prevTranslationY = useSharedValue(0);
 
+  const handleSelectedSprite = () => {
+    if (sprite.getId() === selectedSprite?.getId()) return;
+    setSelectedSprite(sprite);
+  };
+
   const initializeTranslations = () => {
+    if (isInited) return;
+
     const origin = getOrigin(canvasArea);
+    if (origin.x === 0 && origin.y === 0) return;
     translationX.value = origin.x + sprite.getX() - spriteSize / 2;
     translationY.value = origin.y + sprite.getY() - spriteSize / 2;
+    prevTranslationX.value = translationX.value;
+    prevTranslationY.value = translationY.value;
+    setIsInited(true);
   };
 
   useEffect(() => {
@@ -81,10 +93,7 @@ const SpriteView = ({ sprite, canvasArea }: Props) => {
   const updateState = ({ x, y }: { x: number; y: number }) => {
     setSprites((prevSprites) =>
       prevSprites.map((s) => {
-        if (
-          s.getId() === sprite.getId() &&
-          (s.getX() !== x || s.getY() !== y)
-        ) {
+        if (s.getId() === sprite.getId()) {
           s.setX(x);
           s.setY(y);
         }
@@ -98,6 +107,7 @@ const SpriteView = ({ sprite, canvasArea }: Props) => {
     .onStart(() => {
       prevTranslationX.value = translationX.value;
       prevTranslationY.value = translationY.value;
+      handleSelectedSprite();
     })
     .onUpdate((event) => {
       translationX.value = clamp(
@@ -133,7 +143,9 @@ const SpriteView = ({ sprite, canvasArea }: Props) => {
   return (
     <GestureDetector gesture={pan}>
       <Animated.View style={[styles.container, animatedStyles]}>
-        <Image style={styles.image} source={sprite?.getIcon()} />
+        <TouchableOpacity onPress={handleSelectedSprite} activeOpacity={1}>
+          <Image style={styles.image} source={sprite?.getIcon()} />
+        </TouchableOpacity>
       </Animated.View>
     </GestureDetector>
   );

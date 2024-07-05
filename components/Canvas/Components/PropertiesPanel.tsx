@@ -4,8 +4,7 @@ import PropertiesItem from "./PropertiesItem";
 import { useMainContextProvider } from "@/hooks/MainContextProvider";
 
 const PropertiesPanel = () => {
-  const { selectedSprite, setSelectedSprite, sprites, setSprites } =
-    useMainContextProvider();
+  const { selectedSprite, setSprites } = useMainContextProvider();
   return (
     <View style={styles.container}>
       <ScrollView horizontal style={{ height: 56 }}>

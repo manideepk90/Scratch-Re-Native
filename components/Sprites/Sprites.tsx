@@ -1,14 +1,17 @@
-import { ScrollView, StyleSheet, Text, View } from "react-native";
-import React from "react";
+import { ScrollView, StyleSheet, View } from "react-native";
+import React, { useMemo } from "react";
 import SpriteItem from "./SpriteItem";
 import AvailableSprites from "@/constants/AvailableSprites";
 import Sprite from "@/lib/Sprite";
 
 const Sprites = () => {
+  const sprites = useMemo((): any => {
+    return AvailableSprites;
+  }, []);
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        {AvailableSprites.map((sprite: any, index: number) => {
+        {sprites.map((sprite: any, index: number) => {
           return (
             <SpriteItem
               key={sprite.id}

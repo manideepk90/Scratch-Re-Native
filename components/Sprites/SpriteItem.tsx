@@ -6,7 +6,7 @@ import {
   Image,
   Modal,
 } from "react-native";
-import React from "react";
+import React, { useCallback, useMemo } from "react";
 import { deleteIcon } from "@/constants/icons";
 import Sprite from "@/lib/Sprite";
 import { useMainContextProvider } from "@/hooks/MainContextProvider";
@@ -33,50 +33,54 @@ const SpriteItem = ({
   var { selectedSprite, setSelectedSprite, deleteSprite, addSprite } =
     useMainContextProvider();
 
-  const mainStyles = StyleSheet.create({
-    container: {
-      justifyContent: "center",
-      width: isActivelyDragging ? 80 : 75,
-      height: isActivelyDragging ? 80 : 75,
-      borderWidth: isActivelyDragging
-        ? 3
-        : sprite.getId() === selectedSprite?.getId() && isDelete
-        ? 2
-        : 0.8,
-      borderColor:
-        sprite.getId() === selectedSprite?.getId() && isDelete
-          ? "#1E6BFF"
-          : "#ffffff",
-      alignItems: "center",
-      position: "relative",
-      borderRadius: 4,
-    },
-  });
+  const mainStyles = useMemo(
+    () =>
+      StyleSheet.create({
+        container: {
+          justifyContent: "center",
+          width: isActivelyDragging ? 80 : 75,
+          height: isActivelyDragging ? 80 : 75,
+          borderWidth: isActivelyDragging
+            ? 3
+            : sprite.getId() === selectedSprite?.getId() && isDelete
+            ? 2
+            : 0.8,
+          borderColor:
+            sprite.getId() === selectedSprite?.getId() && isDelete
+              ? "#1E6BFF"
+              : "#ffffff",
+          alignItems: "center",
+          position: "relative",
+          borderRadius: 4,
+        },
+      }),
+    [isActivelyDragging, selectedSprite, sprite, isDelete]
+  );
 
   const [confirmDelete, setConfirmDelete] = React.useState(false);
 
-  const handleConfirm = () => {
+  const handleConfirm = useCallback(() => {
     deleteSprite(sprite);
     setSelectedSprite(null);
-  };
+  }, [deleteSprite, sprite, setSelectedSprite]);
 
+  const addNew = useCallback(() => {
+    sprite.setNewId();
+    const ranXY = randomXY();
+    sprite.setX(ranXY.x);
+    sprite.setY(ranXY.y);
+    addSprite(sprite);
+  }, [sprite, addSprite]);
   return (
     <TouchableOpacity
       style={mainStyles.container}
       onLongPress={longPress}
       onPress={() => {
-        const addNew = () => {
-          sprite.setNewId();
-          const ranXY = randomXY();
-          sprite.setX(ranXY.x);
-          sprite.setY(ranXY.y);
-          addSprite(sprite);
-        };
         isAdd
           ? addNew()
           : selectedSprite && selectedSprite.getId() === sprite.getId()
           ? setSelectedSprite(null)
-          : setSelectedSprite(sprite.getSprite());
+          : setSelectedSprite(sprite);
       }}
     >
       <Confirmation

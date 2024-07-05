@@ -60,7 +60,14 @@ function SpritesComponent({ notAddable = false }: props) {
           renderItem={renderItem}
           keyExtractor={(item) => item.getId()}
           horizontal
-          onDragEnd={({ data }) => setSprites(data)}
+          onDragEnd={({ data }) =>
+            setSprites(
+              data.filter(
+                (sprite) =>
+                  sprite.getName() !== "special-add-non-actionable-sprite"
+              )
+            )
+          }
           containerStyle={{ gap: 10 }}
         />
       </View>
