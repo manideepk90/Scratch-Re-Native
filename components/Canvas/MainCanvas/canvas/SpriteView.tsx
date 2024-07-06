@@ -1,4 +1,4 @@
-import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
+import { Image, StyleSheet, TouchableOpacity, View, Text } from "react-native";
 import React, { useEffect, useMemo, useState } from "react";
 import Sprite from "@/lib/Sprite";
 import Animated, {
@@ -124,7 +124,67 @@ const SpriteView = ({ sprite, canvasArea }: Props) => {
 
   return (
     <GestureDetector gesture={pan}>
-      <Animated.View style={[styles.container, animatedStyles]}>
+      <Animated.View
+        style={[styles.container, { position: "relative" }, animatedStyles]}
+      >
+        {sprite?.getMessage() && (
+          <View
+            style={{
+              position: "absolute",
+              top: -30,
+              right: -60,
+              height: 30,
+            }}
+          >
+            <View
+              style={{
+                borderRadius: 50,
+                borderWidth: 0.5,
+                padding: 5,
+                position: "relative",
+              }}
+            >
+              {sprite?.getThinking() ? (
+                <View
+                  style={{
+                    position: "absolute",
+                    bottom: -12,
+                    left: -10,
+                    width: 10,
+                    height: 20,
+                    transform: [
+                      {
+                        rotate: "50deg",
+                      },
+                    ],
+                  }}
+                >
+                  <Text style={{ fontSize: 15, fontWeight: 600 }}>o</Text>
+                </View>
+              ) : (
+                <View
+                  style={{
+                    position: "absolute",
+                    borderWidth: 0.5,
+                    bottom: -12,
+                    left: -10,
+                    width: 10,
+                    height: 20,
+                    borderBottomEndRadius: 15,
+                    borderBottomStartRadius: 15,
+                    borderTopWidth: 0,
+                    transform: [
+                      {
+                        rotate: "50deg",
+                      },
+                    ],
+                  }}
+                ></View>
+              )}
+              <Text>{sprite?.getMessage()}</Text>
+            </View>
+          </View>
+        )}
         <TouchableOpacity onPress={handleSelectedSprite} activeOpacity={1}>
           <View>
             <Image style={styles.image} source={sprite?.getIcon()} />

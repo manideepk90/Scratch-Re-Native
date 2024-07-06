@@ -1,6 +1,6 @@
 import { generateRandomColor, generateUniqueId } from "@/utils/utils";
 import Sprite from "./Sprite";
-import AvailableActions from "@/constants/Actions";
+import { getRandomNumber } from "./randomNess";
 
 interface ActionType {
   name: string;
@@ -24,12 +24,7 @@ class Action {
   private y: number = 0;
   private zIndex: number = 2;
 
-  private functions: any = [
-    {
-      ...AvailableActions.Motion[0],
-      id: generateUniqueId(),
-    },
-  ];
+  private functions: any = [];
   constructor({
     name,
     size = 100,
@@ -133,9 +128,16 @@ class Action {
       y: this.y,
     });
   }
+  setMethods(methods: any) {
+    this.functions = methods;
+  }
 
   public addFunction(func: any): void {
-    this.functions.push(func);
+    this.functions.push({
+      ...func,
+      id: generateUniqueId(),
+      getRandomNumber: getRandomNumber,
+    });
   }
 
   public removeFunction(func: any): void {

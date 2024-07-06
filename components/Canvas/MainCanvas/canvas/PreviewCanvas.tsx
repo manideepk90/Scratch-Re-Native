@@ -18,7 +18,6 @@ const PreviewCanvas = () => {
   };
   return (
     <View style={styles.container}>
-      <IconPreview />
       <ScrollView
         horizontal={true}
         contentContainerStyle={styles.scrollContainer}

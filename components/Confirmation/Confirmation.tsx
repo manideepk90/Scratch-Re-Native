@@ -1,12 +1,19 @@
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
 
+interface props {
+  open: boolean;
+  handleClose: (value: boolean) => void;
+  handleConfirm: () => void;
+  title?: string;
+}
+
 const Confirmation = ({
   open,
   handleClose,
   handleConfirm,
   title = "Are you sure you want to delete this sprite?",
-}: any) => {
+}: props) => {
   return (
     <Modal
       transparent={true}

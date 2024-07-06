@@ -1,13 +1,18 @@
-import { StyleSheet, View } from "react-native";
-import React from "react";
+import { LayoutChangeEvent, StyleSheet, View } from "react-native";
+import React, { useState } from "react";
 import CodePanel from "../../Components/CodePanel";
 import ActionsCanvas from "./ActionsCanvas";
 
 const Actions = () => {
+  const [canvasArea, setCanvasArea] = useState({ width: 0, height: 0 });
+  const onLayout = (event: LayoutChangeEvent) => {
+    const { width, height } = event.nativeEvent.layout;
+    setCanvasArea({ width, height });
+  };
   return (
-    <View style={styles.container}>
-      <ActionsCanvas />
-      <CodePanel />
+    <View style={styles.container} onLayout={onLayout}>
+      <ActionsCanvas canvasArea={canvasArea} />
+      <CodePanel canvasArea={canvasArea} />
     </View>
   );
 };

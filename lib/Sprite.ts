@@ -18,12 +18,16 @@ class Sprite {
   private x = 0;
   private y = 0;
   private direction = 0;
+
+  // looks
+  private message: string = "";
+  private thinking: boolean = false;
+
   constructor(sprite: SpriteProps) {
     this.name = sprite.name;
     this.icon = sprite.icon;
     this.size = sprite?.size || 50;
     this.addAction(new Action({ name: "action-1" }));
-    this.addAction(new Action({ name: "action-2" }));
     this.id = sprite.id || generateUniqueId();
   }
 
@@ -69,6 +73,14 @@ class Sprite {
     });
   }
 
+  getMessage(): string {
+    return this.message;
+  }
+
+  getThinking(): boolean {
+    return this.thinking;
+  }
+
   // Setters
   setName(name: string) {
     this.name = name;
@@ -109,6 +121,20 @@ class Sprite {
     } else {
       console.error("Size must be positive");
     }
+  }
+
+  setMessage(message: string, autoClear = false, timeOut = 4000) {
+    this.message = message;
+    if (autoClear)
+      setTimeout(() => {
+        this.message = "";
+      }, timeOut);
+    return this;
+  }
+
+  setThinking(thinking: boolean) {
+    this.thinking = thinking;
+    return this;
   }
 
   addAction(action: Action) {

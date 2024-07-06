@@ -2,6 +2,7 @@ import { backIcon, menuIcon, textLogo } from "@/constants/icons";
 import { router } from "expo-router";
 import React from "react";
 import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
+import IconPreview from "../Canvas/MainCanvas/canvas/IconPreview";
 
 interface props {
   isBack?: boolean;
@@ -24,7 +25,9 @@ function TopAppBar({ isBack = false }: props) {
       <View>
         <Image style={styles.textLogo} source={textLogo} />
       </View>
-      <View style={styles.backdrop}></View>
+      <View style={styles.backdrop}>
+        <IconPreview />
+      </View>
     </View>
   );
 }
@@ -34,7 +37,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    // margin: 5,
     height: 56,
     backgroundColor: "#FFF0D9",
     borderRadius: 4,

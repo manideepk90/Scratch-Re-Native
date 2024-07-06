@@ -1,5 +1,5 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React, { useEffect, useState } from "react";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import React, { useEffect, useState, useMemo } from "react";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -11,13 +11,16 @@ import Line from "@/components/UtilComponent/VerticalLine";
 import { clamp, convertToXYCoordinates, getOrigin } from "@/utils/utils";
 import InputBox from "@/components/Confirmation/InputBox";
 import ActionsItem from "../../Components/ActionsItem";
+import DraggableFlatList from "react-native-draggable-flatlist";
+import { deleteIcon } from "@/constants/icons";
+import Confirmation from "@/components/Confirmation/Confirmation";
 
-interface props {
+interface Props {
   action: Action;
   canvasArea: { width: number; height: number };
 }
 
-const ActionView = ({ action, canvasArea }: props) => {
+const ActionView = ({ action, canvasArea }: Props) => {
   const { selectedSprite, setSprites } = useMainContextProvider();
   const [isInited, setIsInited] = useState(false);
 
@@ -26,6 +29,8 @@ const ActionView = ({ action, canvasArea }: props) => {
   const prevTranslationX = useSharedValue(0);
   const prevTranslationY = useSharedValue(0);
   const [inputOpen, setInputOpen] = useState(false);
+  const [confirmation, setConfirmation] = useState(false);
+
   const initializeTranslations = () => {
     if (isInited) return;
 
@@ -33,7 +38,7 @@ const ActionView = ({ action, canvasArea }: props) => {
     if (origin.x === 0 && origin.y === 0) return;
 
     translationX.value = origin.x + action.getX() - action.getWidth() / 2;
-    translationY.value = origin.y + action.getY() - action.getHeight() / 2;
+    translationY.value = origin.y + action.getY() - action.getHeight() / 2 - 60;
     prevTranslationX.value = translationX.value;
     prevTranslationY.value = translationY.value;
     setIsInited(true);
@@ -41,32 +46,43 @@ const ActionView = ({ action, canvasArea }: props) => {
 
   useEffect(() => {
     initializeTranslations();
-  }, [canvasArea]);
+  }, [canvasArea, initializeTranslations]);
 
-  const styles = StyleSheet.create({
-    label: {
-      width: "100%",
-      textAlign: "center",
-      fontSize: 18,
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    container: {
-      backgroundColor: action.getColor() || "#FAFAAA",
-      width: action.getWidth() | 100,
-      height: action.getHeight() | 100,
-      padding: 5,
-      borderRadius: 4,
-      position: "absolute",
-      top: 0,
-      left: 0,
-      zIndex: action.getZIndex() || 0,
-    },
-    itemsContainer: {
-      flex: 1,
-      backgroundColor: "#FFF",
-    },
-  });
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        label: {
+          width: "100%",
+          textAlign: "center",
+          fontSize: 18,
+          alignItems: "center",
+          justifyContent: "center",
+        },
+        container: {
+          backgroundColor: action.getColor() || "#FAFAAA",
+          width: action.getWidth(),
+          height: action.getHeight(),
+          padding: 5,
+          borderRadius: 4,
+          position: "absolute",
+          top: 0,
+          left: 0,
+          zIndex: action.getZIndex(),
+        },
+        itemsContainer: {
+          backgroundColor: "#FFF",
+          flex: 1,
+          justifyContent: "flex-start",
+          alignItems: "flex-start",
+        },
+      }),
+    [
+      action.getHeight(),
+      action.getWidth(),
+      action.getColor(),
+      action.getZIndex(),
+    ]
+  );
 
   const handleNameChange = (name: string) => {
     setSprites((prev) =>
@@ -87,28 +103,42 @@ const ActionView = ({ action, canvasArea }: props) => {
     );
   };
 
+  const handleZIndexChange = () => {
+    setSprites((prev) =>
+      prev.map((sprite) => {
+        if (sprite.getId() === selectedSprite?.getId()) {
+          sprite.getActions().map((s) => {
+            if (s.getId() === action.getId()) {
+              s.setZIndex(1200);
+            } else {
+              s.setZIndex(10);
+            }
+          });
+        }
+        return sprite;
+      })
+    );
+  };
+
+  const handleDelete = () => {
+    setConfirmation(false);
+    setSprites((prev) =>
+      prev.map((sprite) => {
+        if (sprite.getId() === selectedSprite?.getId()) {
+          sprite.setActions(
+            sprite.getActions().filter((s) => s.getId() !== action.getId())
+          );
+        }
+        return sprite;
+      })
+    );
+  };
+
   const pan = Gesture.Pan()
     .onStart(() => {
       prevTranslationX.value = translationX.value;
       prevTranslationY.value = translationY.value;
-      setSprites((prev) =>
-        prev.map((sprite) => {
-          if (sprite.getId() === selectedSprite?.getId()) {
-            const actions = sprite.getActions();
-            sprite.setActions(
-              actions.map((s, index) => {
-                if (s.getId() === action.getId()) {
-                  s.setZIndex(actions.length + index);
-                } else {
-                  s.setZIndex(actions.length - index);
-                }
-                return s;
-              })
-            );
-          }
-          return sprite;
-        })
-      );
+      handleZIndexChange();
     })
     .onUpdate((event) => {
       translationX.value = clamp(
@@ -119,7 +149,7 @@ const ActionView = ({ action, canvasArea }: props) => {
       translationY.value = clamp(
         prevTranslationY.value + event.translationY,
         0,
-        canvasArea.height - action.getHeight()
+        canvasArea.height - action.getHeight() - 60
       );
     })
     .onEnd(() => {
@@ -165,24 +195,85 @@ const ActionView = ({ action, canvasArea }: props) => {
       <InputBox
         open={inputOpen}
         handleClose={setInputOpen}
-        // handleConfirm={() => {}}
         value={action.getName()}
         setValue={handleNameChange}
       />
+      <Confirmation
+        open={confirmation}
+        handleClose={setConfirmation}
+        handleConfirm={handleDelete}
+        title={`Do you really want to delete ${action.getName()}?`}
+      />
       <GestureDetector gesture={pan}>
-        <TouchableOpacity
-          onPress={() => {
-            setInputOpen(true);
-          }}
-        >
-          <Text style={styles.label}>{action.getName()}</Text>
-        </TouchableOpacity>
+        <View style={{ width: "100%", flexDirection: "row" }}>
+          <TouchableOpacity
+            onPress={() => setInputOpen(true)}
+            style={{
+              flex: 1,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Text style={styles.label}>{action.getName()}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => setConfirmation(true)}
+            style={{
+              width: 30,
+              height: 30,
+              justifyContent: "center",
+              alignItems: "center",
+              borderRadius: 15,
+            }}
+          >
+            <Image source={deleteIcon} style={{ width: 25, height: 25 }} />
+          </TouchableOpacity>
+        </View>
       </GestureDetector>
       <Line horizontal />
+      {/* <ScrollView contentContainerStyle> */}
       <View style={styles.itemsContainer}>
-        {action.getMethods().map((item: any, index: number) => (
-          <ActionsItem key={index} {...item} />
-        ))}
+        <DraggableFlatList
+          containerStyle={{ height: "100%", width: "100%" }}
+          data={[...action.getMethods()] as any}
+          renderItem={({
+            item,
+            drag,
+            isActive,
+          }: {
+            item: Action;
+            drag: any;
+            isActive: boolean;
+          }) => {
+            return (
+              <TouchableOpacity
+                style={{
+                  justifyContent: "flex-start",
+                  alignItems: "flex-start",
+                }}
+                onLongPress={drag}
+              >
+                <ActionsItem {...item} disabled={true} />
+              </TouchableOpacity>
+            );
+          }}
+          keyExtractor={(item: any, index) => item.id || index.toString()}
+          onDragEnd={({ data }) => {
+            setSprites((prev) => {
+              return prev.map((sprite) => {
+                if (sprite.getId() === selectedSprite?.getId()) {
+                  sprite.getActions().map((ac) => {
+                    if (ac.getId() === action.getId()) {
+                      ac.setMethods(data);
+                    }
+                    return ac;
+                  });
+                }
+                return sprite;
+              });
+            });
+          }}
+        />
       </View>
     </Animated.View>
   );
