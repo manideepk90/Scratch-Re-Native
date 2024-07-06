@@ -1,4 +1,4 @@
-import { Image, StyleSheet, TouchableOpacity } from "react-native";
+import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
 import React, { useEffect, useMemo, useState } from "react";
 import Sprite from "@/lib/Sprite";
 import Animated, {
@@ -7,36 +7,12 @@ import Animated, {
 } from "react-native-reanimated";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { useMainContextProvider } from "@/hooks/MainContextProvider";
+import { clamp, convertToXYCoordinates, getOrigin } from "@/utils/utils";
 
 interface Props {
   sprite: Sprite;
   canvasArea: { width: number; height: number };
 }
-
-const getOrigin = (canvasArea: { width: number; height: number }) => {
-  return {
-    x: canvasArea.width / 2,
-    y: canvasArea.height / 2,
-  };
-};
-
-const clamp = (val: number, min: number, max: number) => {
-  return Math.min(Math.max(val, min), max);
-};
-
-const convertToXYCoordinates = (
-  translationX: number,
-  translationY: number,
-  canvasArea: { width: number; height: number },
-  spriteSize: number
-) => {
-  const origin = getOrigin(canvasArea);
-  const size = spriteSize / 2;
-  return {
-    x: translationX - origin.x + size,
-    y: translationY - origin.x + size,
-  };
-};
 
 const SpriteView = ({ sprite, canvasArea }: Props) => {
   const spriteSize = sprite.getSize();
@@ -63,11 +39,18 @@ const SpriteView = ({ sprite, canvasArea }: Props) => {
       },
     });
   }, [sprite.getDirection(), sprite.getSize(), sprites]);
-
+  const origin = getOrigin(canvasArea);
   const translationX = useSharedValue(sprite.getX());
   const translationY = useSharedValue(sprite.getY());
-  const prevTranslationX = useSharedValue(0);
-  const prevTranslationY = useSharedValue(0);
+  const prevTranslationX = useSharedValue(sprite.getX());
+  const prevTranslationY = useSharedValue(sprite.getY());
+
+  useEffect(() => {
+    translationX.value = origin.x + sprite.getX() - spriteSize / 2;
+    translationY.value = origin.y + sprite.getY() - spriteSize / 2;
+    prevTranslationX.value = translationX.value;
+    prevTranslationY.value = translationY.value;
+  }, [sprite.getX(), sprite.getY()]);
 
   const handleSelectedSprite = () => {
     if (sprite.getId() === selectedSprite?.getId()) return;
@@ -77,7 +60,6 @@ const SpriteView = ({ sprite, canvasArea }: Props) => {
   const initializeTranslations = () => {
     if (isInited) return;
 
-    const origin = getOrigin(canvasArea);
     if (origin.x === 0 && origin.y === 0) return;
     translationX.value = origin.x + sprite.getX() - spriteSize / 2;
     translationY.value = origin.y + sprite.getY() - spriteSize / 2;
@@ -144,7 +126,9 @@ const SpriteView = ({ sprite, canvasArea }: Props) => {
     <GestureDetector gesture={pan}>
       <Animated.View style={[styles.container, animatedStyles]}>
         <TouchableOpacity onPress={handleSelectedSprite} activeOpacity={1}>
-          <Image style={styles.image} source={sprite?.getIcon()} />
+          <View>
+            <Image style={styles.image} source={sprite?.getIcon()} />
+          </View>
         </TouchableOpacity>
       </Animated.View>
     </GestureDetector>

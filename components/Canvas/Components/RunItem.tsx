@@ -1,20 +1,22 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import Action from "@/lib/Action";
 
 interface props {
-  onclick?: () => void;
+  onclick?: (action: Action) => void;
+  action: Action;
 }
 
-const RunItem = ({ onclick }: props) => {
+const RunItem = ({ action, onclick }: props) => {
   return (
     <TouchableOpacity
       style={styles.container}
       onPress={() => {
-        onclick && onclick();
+        onclick && onclick(action);
       }}
     >
-      <Text style={styles.actionLabel}>Action 1</Text>
+      <Text style={styles.actionLabel}>{action.getName()}</Text>
     </TouchableOpacity>
   );
 };

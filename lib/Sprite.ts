@@ -1,3 +1,4 @@
+import { generateUniqueId } from "@/utils/utils";
 import Action from "./Action";
 
 interface SpriteProps {
@@ -8,15 +9,11 @@ interface SpriteProps {
   actions?: Action[];
 }
 
-const generateUniqueId = () => {
-  return `id_${Date.now()}_${Math.floor(Math.random() * 1000000 + 1)}`;
-};
-
 class Sprite {
   private name: string;
   private icon: any;
   private size: number;
-  private actions: Action[];
+  private actions: Action[] = [];
   private id: string;
   private x = 0;
   private y = 0;
@@ -25,7 +22,8 @@ class Sprite {
     this.name = sprite.name;
     this.icon = sprite.icon;
     this.size = sprite?.size || 50;
-    this.actions = sprite?.actions || [];
+    this.addAction(new Action({ name: "action-1" }));
+    this.addAction(new Action({ name: "action-2" }));
     this.id = sprite.id || generateUniqueId();
   }
 
@@ -99,6 +97,11 @@ class Sprite {
     return this;
   }
 
+  setActions(actions: Action[]) {
+    this.actions = actions;
+    return this;
+  }
+
   setSize(size: number) {
     if (size >= 0) {
       this.size = size;
@@ -106,6 +109,16 @@ class Sprite {
     } else {
       console.error("Size must be positive");
     }
+  }
+
+  addAction(action: Action) {
+    action.setName(`action-${this.actions.length + 1}`);
+    if (this.actions.length !== 0) {
+      action.setX(action.getX() + 20);
+      action.setY(action.getY() + 10);
+    }
+    this.actions.push(action);
+    return this;
   }
 }
 

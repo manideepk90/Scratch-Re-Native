@@ -1,8 +1,27 @@
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import RunItem from "./RunItem";
+import { useMainContextProvider } from "@/hooks/MainContextProvider";
+import Action from "@/lib/Action";
 
 const RunPanel = () => {
+  const { selectedSprite, setSprites } = useMainContextProvider();
+
+  const runAction = (action: Action) => {
+    setSprites((prev) => {
+      return prev.map((sprite) => {
+        if (sprite.getId() === selectedSprite?.getId()) {
+          sprite.getActions().map((ac) => {
+            if (ac.getId() === action.getId()) {
+              ac.runAction(sprite);
+            }
+          });
+        }
+        return sprite;
+      });
+    });
+  };
+
   return (
     <View style={styles.container}>
       <View>
@@ -10,10 +29,9 @@ const RunPanel = () => {
       </View>
       <ScrollView horizontal style={{ height: 56 }}>
         <View style={styles.scrollView}>
-          <RunItem />
-          <RunItem />
-          <RunItem />
-          <RunItem />
+          {selectedSprite?.getActions().map((action, index) => (
+            <RunItem key={index} action={action} onclick={runAction} />
+          ))}
         </View>
       </ScrollView>
     </View>

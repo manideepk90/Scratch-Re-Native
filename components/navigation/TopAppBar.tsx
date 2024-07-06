@@ -17,7 +17,7 @@ function TopAppBar({ isBack = false }: props) {
         }}
       >
         <View style={styles.modalContent}>
-          <Image source={isBack ? backIcon : menuIcon} />
+          {isBack && <Image source={isBack ? backIcon : menuIcon} />}
         </View>
       </TouchableOpacity>
 

@@ -8,6 +8,16 @@ import {
 } from "react-native";
 import React from "react";
 
+interface InputBoxProps {
+  open: boolean;
+  handleClose: any;
+  handleConfirm?: () => void;
+  title?: string;
+  type?: "text" | "number";
+  value: string;
+  setValue?: any;
+}
+
 const InputBox = ({
   open,
   handleClose,
@@ -16,7 +26,7 @@ const InputBox = ({
   type = "text",
   value,
   setValue,
-}: any) => {
+}: InputBoxProps) => {
   return (
     <Modal
       transparent={true}

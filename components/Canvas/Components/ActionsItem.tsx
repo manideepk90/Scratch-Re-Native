@@ -19,9 +19,6 @@ interface Props {
   setValue2?: (value: string | undefined) => void;
   isInput?: boolean;
   endLabelMiddle?: string;
-  setSelectedAction?: any;
-  action: any;
-  selectedAction?: any;
 }
 
 const ActionsItem = ({
@@ -36,37 +33,26 @@ const ActionsItem = ({
   setValue2,
   isInput = true,
   endLabelMiddle,
-  setSelectedAction,
-  selectedAction,
-  action,
 }: Props) => {
   const translationX = useSharedValue(0);
   const translationY = useSharedValue(0);
-  const [value, setCanvas] = useState({ width: 10, height: 10 });
-  const handleLayout = (event: any) => {
-    const { x, y } = event.nativeEvent.layout;
-    setCanvas({ width: x, height: y });
-  };
 
   const pan = Gesture.Pan()
-    .onStart(() => {
-      if (Object.keys(selectedAction || {}).length === 0) {
-        setSelectedAction(() => ({
-          action,
-          coordinates: { x: translationX, y: translationY },
-          animatedStyles,
-          canvas: value,
-        }));
-      }
-    })
+    .minDistance(2)
+    .onStart(() => {})
     .onUpdate((event) => {
       translationX.value = event.translationX;
       translationY.value = event.translationY;
+      console.log(
+        "translationX",
+        translationX.value,
+        "translationY",
+        translationY.value
+      );
     })
     .onEnd(() => {
       translationX.value = 0;
       translationY.value = 0;
-      setSelectedAction(null);
     })
     .runOnJS(true);
   const animatedStyles = useAnimatedStyle(() => ({
@@ -77,17 +63,14 @@ const ActionsItem = ({
   }));
   return (
     <GestureDetector gesture={pan}>
-      <Animated.View
-        style={[styles.container, animatedStyles]}
-        onLayout={handleLayout}
-      >
-        <Text style={styles.actionLabel}>{label} </Text>
+      <Animated.View style={[styles.container, animatedStyles]}>
+        <Text style={styles.actionLabel}>{label}</Text>
         {isInput && (
           <TextInput
             style={styles.textInput}
-            value={value1}
-            onChange={(e: any) => {
-              setValue && setValue(e.target.value);
+            value={value1?.toString()}
+            onChangeText={(e: any) => {
+              setValue && setValue(e);
             }}
             keyboardType={type === "text" ? "ascii-capable" : "numeric"}
           />
@@ -101,9 +84,9 @@ const ActionsItem = ({
             <Text style={styles.actionLabel}>{label2} </Text>
             <TextInput
               style={styles.textInput}
-              value={value2}
-              onChange={(e: any) => {
-                setValue2 && setValue2(e.target.value);
+              value={value2?.toString()}
+              onChangeText={(e: any) => {
+                setValue && setValue(e);
               }}
               keyboardType={type === "text" ? "ascii-capable" : "numeric"}
             />

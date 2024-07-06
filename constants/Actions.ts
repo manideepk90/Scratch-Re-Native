@@ -1,16 +1,21 @@
+import Sprite from "@/lib/Sprite";
+
 const AvailableActions = {
   Motion: [
     {
       id: 1,
       label: "Move",
-      value: "10",
+      value: 10,
       endLabel: "steps",
       type: "number",
+      callback: (sprite: Sprite, refObject: any) => {
+        sprite.setX(sprite.getX() + refObject.value);
+      },
     },
     {
       id: 2,
       label: "Turn Right",
-      value: "15",
+      value: 15,
       endLabel: "degrees",
       type: "number",
     },
