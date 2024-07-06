@@ -123,11 +123,17 @@ class Sprite {
     }
   }
 
-  setMessage(message: string, autoClear = false, timeOut = 4000) {
+  setMessage(
+    message: string,
+    autoClear = false,
+    timeOut = 4000,
+    callback?: any
+  ) {
     this.message = message;
     if (autoClear)
       setTimeout(() => {
         this.message = "";
+        callback && callback(this);
       }, timeOut);
     return this;
   }

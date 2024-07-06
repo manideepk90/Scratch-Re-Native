@@ -148,8 +148,10 @@ class Action {
     return this.functions;
   }
 
-  public runAction(sprite: Sprite): void {
-    this.functions.forEach((func: any) => func.callback(sprite, func));
+  public runAction(sprite: Sprite, callback?: any): void {
+    this.functions.forEach((func: any) =>
+      func.callback(sprite, func, callback)
+    );
   }
 
   public static fromJSON(json: string): Action {

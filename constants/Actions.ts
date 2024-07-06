@@ -8,7 +8,7 @@ const AvailableActions = [
     value: 10,
     endLabel: "steps",
     type: "number",
-    callback: (sprite: Sprite, refObject: any) => {
+    callback: (sprite: Sprite, refObject: any, funcCallback: any) => {
       sprite.setX(sprite.getX() + refObject.value);
     },
   },
@@ -19,7 +19,7 @@ const AvailableActions = [
     value: 15,
     endLabel: "degrees",
     type: "number",
-    callback: (sprite: Sprite, refObject: any) => {
+    callback: (sprite: Sprite, refObject: any, funcCallback: any) => {
       sprite.setDirection(sprite.getDirection() + refObject.value);
     },
   },
@@ -30,8 +30,20 @@ const AvailableActions = [
     value: "15",
     endLabel: "degrees",
     type: "number",
-    callback: (sprite: Sprite, refObject: any) => {
+    callback: (sprite: Sprite, refObject: any, funcCallback: any) => {
       sprite.setDirection(sprite.getDirection() - refObject.value);
+    },
+  },
+  {
+    id: 5,
+    actionType: "Motion",
+    label: "Go to",
+    value: "Random",
+    endLabel: "Position",
+    type: "number",
+    callback: (sprite: Sprite, refObject: any, funcCallback: any) => {
+      sprite.setX(refObject.getRandomNumber(-180, 180));
+      sprite.setY(refObject.getRandomNumber(-180, 180));
     },
   },
   {
@@ -42,7 +54,7 @@ const AvailableActions = [
     value1Disabled: true,
     endLabel: "degrees",
     type: "number",
-    callback: (sprite: Sprite, refObject: any) => {
+    callback: (sprite: Sprite, refObject: any, funcCallback: any) => {
       sprite.setDirection(refObject.getRandomNumber(-180, 180));
     },
   },
@@ -54,8 +66,8 @@ const AvailableActions = [
     label2: "Y",
     value: 10,
     value2: 12,
-    type : "number",
-    callback: (sprite: Sprite, refObject: any) => {
+    type: "number",
+    callback: (sprite: Sprite, refObject: any, funcCallback: any) => {
       sprite.setX(refObject.value);
       sprite.setY(refObject.value2);
     },
@@ -65,7 +77,7 @@ const AvailableActions = [
     actionType: "Looks",
     label: "Say",
     value: "Hello",
-    callback: (sprite: Sprite, refObject: any) => {
+    callback: (sprite: Sprite, refObject: any, funcCallback: any) => {
       sprite.setThinking(false).setMessage(refObject.value);
     },
   },
@@ -78,10 +90,15 @@ const AvailableActions = [
     input: 2,
     label2: "For",
     value2: 2,
-    callback: (sprite: Sprite, refObject: any) => {
+    callback: (sprite: Sprite, refObject: any, funcCallback: any) => {
       sprite
         .setThinking(false)
-        .setMessage(refObject.value, true, refObject.value2 * 1000);
+        .setMessage(
+          refObject.value,
+          true,
+          refObject.value2 * 1000,
+          funcCallback
+        );
     },
   },
   {
@@ -93,10 +110,15 @@ const AvailableActions = [
     input: 2,
     label2: "For",
     value2: 2,
-    callback: (sprite: Sprite, refObject: any) => {
+    callback: (sprite: Sprite, refObject: any, funcCallback: any) => {
       sprite
         .setThinking(true)
-        .setMessage(refObject.value, true, refObject.value2 * 1000);
+        .setMessage(
+          refObject.value,
+          true,
+          refObject.value2 * 1000,
+          funcCallback
+        );
     },
   },
   {
@@ -104,7 +126,7 @@ const AvailableActions = [
     actionType: "Looks",
     label: "Think",
     value: "Hello",
-    callback: (sprite: Sprite, refObject: any) => {
+    callback: (sprite: Sprite, refObject: any, funcCallback: any) => {
       sprite.setThinking(true).setMessage(refObject.value);
     },
   },
@@ -122,7 +144,7 @@ const AvailableActions = [
     value: 2,
     endLabel: "",
     type: "number",
-    callback: (sprite: Sprite, refObject: any) => {
+    callback: (sprite: Sprite, refObject: any, funcCallback: any) => {
       sprite.setSize(sprite.getSize() * refObject.value);
     },
   },
@@ -133,7 +155,7 @@ const AvailableActions = [
     value: 10,
     endLabel: "%",
     type: "number",
-    callback: (sprite: Sprite, refObject: any) => {
+    callback: (sprite: Sprite, refObject: any, funcCallback: any) => {
       sprite.setSize(sprite.getSize() * (refObject.value / 100));
     },
   },

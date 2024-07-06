@@ -7,13 +7,27 @@ import Action from "@/lib/Action";
 const RunPanel = () => {
   const { selectedSprite, setSprites } = useMainContextProvider();
 
+  // for time controlled changed
+  const updateSprite = (sprite: any) => {
+    setSprites((prev) => {
+      return prev.map((s) => {
+        if (s.getId() === sprite.getId()) {
+          return sprite;
+        }
+        return s;
+      });
+    });
+  };
+
   const runAction = (action: Action) => {
     setSprites((prev) => {
       return prev.map((sprite) => {
         if (sprite.getId() === selectedSprite?.getId()) {
           sprite.getActions().map((ac) => {
             if (ac.getId() === action.getId()) {
-              ac.runAction(sprite);
+              ac.runAction(sprite, (e: any) => {
+                updateSprite(e)
+              });
             }
           });
         }
