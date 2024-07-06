@@ -85,7 +85,7 @@ const SpriteView = ({ sprite, canvasArea }: Props) => {
   };
 
   const pan = Gesture.Pan()
-    .minDistance(5)
+    .minDistance(1)
     .onStart(() => {
       prevTranslationX.value = translationX.value;
       prevTranslationY.value = translationY.value;
@@ -124,9 +124,7 @@ const SpriteView = ({ sprite, canvasArea }: Props) => {
 
   return (
     <GestureDetector gesture={pan}>
-      <Animated.View
-        style={[styles.container, { position: "relative" }, animatedStyles]}
-      >
+      <Animated.View style={[styles.container, animatedStyles]}>
         {sprite?.getMessage() && (
           <View
             style={{
@@ -166,12 +164,12 @@ const SpriteView = ({ sprite, canvasArea }: Props) => {
                   style={{
                     position: "absolute",
                     borderWidth: 0.5,
-                    bottom: -12,
-                    left: -10,
+                    bottom: -10,
+                    left: -9,
                     width: 10,
                     height: 20,
                     borderBottomEndRadius: 15,
-                    borderBottomStartRadius: 15,
+                    borderBottomStartRadius: 0,
                     borderTopWidth: 0,
                     transform: [
                       {

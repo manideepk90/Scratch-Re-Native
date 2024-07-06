@@ -118,7 +118,12 @@ const ActionsItem = ({
               ac.setMethods(
                 ac.getMethods().map((m: any) => {
                   if (m.id === id) {
-                    m.value = Number.parseInt(e) || 0;
+                    m.value =
+                      m.type === "number"
+                        ? Number.parseInt(e) || 0
+                        : e
+                        ? e
+                        : "";
                   }
                   return m;
                 })
@@ -140,7 +145,8 @@ const ActionsItem = ({
             if (ac.getId() === action.getId()) {
               ac.getMethods().map((m: any) => {
                 if (m.id === id) {
-                  m.value2 = Number.parseInt(e) || 0;
+                  m.value2 =
+                    m.type === "number" ? Number.parseInt(e) || 0 : e ? e : "";
                 }
               });
             }
