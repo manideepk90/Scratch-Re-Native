@@ -1,12 +1,15 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import React from "react";
+import IconPreview from "./IconPreview";
 
-const ActionsCanvas = () => {
+interface props {
+  canvasArea: { width: number; height: number };
+}
+
+const ActionsCanvas = ({ canvasArea }: props) => {
   return (
-    <View style={styles.container}>
-      <View>
-        <Text>ActionsCanvas</Text>
-      </View>
+    <View style={[styles.container]}>
+      <IconPreview />
     </View>
   );
 };
@@ -17,11 +20,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 3,
     width: "100%",
-    position: "relative",
-    backgroundColor: "white",
     borderRadius: 4,
     gap: 5,
-    alignItems: "center",
-    justifyContent: "center",
   },
 });

@@ -9,7 +9,6 @@ const TabNavigator = () => {
   const { selectedSprite, sprites } = useMainContextProvider();
   const styles = StyleSheet.create({
     container: {
-      // flex: 1,
       width: "100%",
       flexDirection: "row",
       justifyContent: selectedSprite !== null ? "space-between" : "flex-end",

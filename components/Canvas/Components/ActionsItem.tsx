@@ -1,7 +1,12 @@
 import { StyleSheet, Text, TextInput, View } from "react-native";
-import React from "react";
+import React, { useState } from "react";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+} from "react-native-reanimated";
 
-interface props {
+interface Props {
   label?: string;
   value?: string | undefined;
   setValue?: (value: string | undefined) => void;
@@ -14,6 +19,9 @@ interface props {
   setValue2?: (value: string | undefined) => void;
   isInput?: boolean;
   endLabelMiddle?: string;
+  setSelectedAction?: any;
+  action: any;
+  selectedAction?: any;
 }
 
 const ActionsItem = ({
@@ -28,39 +36,82 @@ const ActionsItem = ({
   setValue2,
   isInput = true,
   endLabelMiddle,
-}: props) => {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.actionLabel}>{label} </Text>
-      {isInput && (
-        <TextInput
-          style={styles.textInput}
-          value={value1}
-          onChange={(e: any) => {
-            setValue && setValue(e.target.value);
-          }}
-          keyboardType={type === "text" ? "ascii-capable" : "numeric"}
-        />
-      )}
-      {endLabelMiddle && (
-        <Text style={styles.actionLabel}>{endLabelMiddle}</Text>
-      )}
+  setSelectedAction,
+  selectedAction,
+  action,
+}: Props) => {
+  const translationX = useSharedValue(0);
+  const translationY = useSharedValue(0);
+  const [value, setCanvas] = useState({ width: 10, height: 10 });
+  const handleLayout = (event: any) => {
+    const { x, y } = event.nativeEvent.layout;
+    setCanvas({ width: x, height: y });
+  };
 
-      {input === 2 ? (
-        <>
-          <Text style={styles.actionLabel}>{label2} </Text>
+  const pan = Gesture.Pan()
+    .onStart(() => {
+      if (Object.keys(selectedAction || {}).length === 0) {
+        setSelectedAction(() => ({
+          action,
+          coordinates: { x: translationX, y: translationY },
+          animatedStyles,
+          canvas: value,
+        }));
+      }
+    })
+    .onUpdate((event) => {
+      translationX.value = event.translationX;
+      translationY.value = event.translationY;
+    })
+    .onEnd(() => {
+      translationX.value = 0;
+      translationY.value = 0;
+      setSelectedAction(null);
+    })
+    .runOnJS(true);
+  const animatedStyles = useAnimatedStyle(() => ({
+    transform: [
+      { translateX: translationX.value },
+      { translateY: translationY.value },
+    ],
+  }));
+  return (
+    <GestureDetector gesture={pan}>
+      <Animated.View
+        style={[styles.container, animatedStyles]}
+        onLayout={handleLayout}
+      >
+        <Text style={styles.actionLabel}>{label} </Text>
+        {isInput && (
           <TextInput
             style={styles.textInput}
-            value={value2}
+            value={value1}
             onChange={(e: any) => {
-              setValue2 && setValue2(e.target.value);
+              setValue && setValue(e.target.value);
             }}
             keyboardType={type === "text" ? "ascii-capable" : "numeric"}
           />
-        </>
-      ) : null}
-      <Text style={styles.actionLabel}>{endLabel}</Text>
-    </View>
+        )}
+        {endLabelMiddle && (
+          <Text style={styles.actionLabel}>{endLabelMiddle}</Text>
+        )}
+
+        {input === 2 ? (
+          <>
+            <Text style={styles.actionLabel}>{label2} </Text>
+            <TextInput
+              style={styles.textInput}
+              value={value2}
+              onChange={(e: any) => {
+                setValue2 && setValue2(e.target.value);
+              }}
+              keyboardType={type === "text" ? "ascii-capable" : "numeric"}
+            />
+          </>
+        ) : null}
+        <Text style={styles.actionLabel}>{endLabel}</Text>
+      </Animated.View>
+    </GestureDetector>
   );
 };
 
@@ -80,6 +131,7 @@ const styles = StyleSheet.create({
     borderColor: "white",
     borderWidth: 2,
     flexDirection: "row",
+    zIndex: 5000,
   },
   actionLabel: {
     fontSize: 14,
