@@ -9,6 +9,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { faCaretLeft, faCaretRight } from "@fortawesome/free-solid-svg-icons";
 import AvailableActions from "@/constants/Actions";
+import { useMainContextProvider } from "@/hooks/MainContextProvider";
 
 const CodePanel = ({
   canvasArea,
@@ -55,8 +56,8 @@ const CodePanel = ({
       ],
     };
   });
-  const [showingAction, setShowingAction] = React.useState(0);
-
+  // const [showingAction, setShowingAction] = React.useState(0);
+  const { showingAction, setShowingAction } = useMainContextProvider();
   return (
     <View style={styles.container}>
       <TouchableOpacity

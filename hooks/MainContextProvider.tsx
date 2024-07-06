@@ -18,6 +18,8 @@ type MainContextType = {
   deleteSprite: (sprite: Sprite | undefined) => void;
   setDefaultSelection: () => void;
   addSprite: (sprite: Sprite) => void;
+  showingAction: number;
+  setShowingAction: Dispatch<SetStateAction<number>>;
 };
 
 const defaultContext: MainContextType = {
@@ -28,6 +30,8 @@ const defaultContext: MainContextType = {
   deleteSprite: (sprite: Sprite | undefined) => {},
   addSprite: (sprite: Sprite) => {},
   setDefaultSelection: () => {},
+  showingAction: 0,
+  setShowingAction: () => {},
 };
 
 export const MainContext = createContext<MainContextType>(defaultContext);
@@ -38,6 +42,7 @@ const MainContextProvider = ({ children }: { children: ReactNode }) => {
   const [sprites, setSprites] = useState<Sprite[]>([
     new Sprite(AvailableSprites[0]),
   ]);
+  const [showingAction, setShowingAction] = useState(0);
   const [selectedSprite, setSelectedSprite] = useState<Sprite | null>(
     sprites[0]
   );
@@ -69,6 +74,8 @@ const MainContextProvider = ({ children }: { children: ReactNode }) => {
         setDefaultSelection,
         deleteSprite,
         addSprite,
+        showingAction,
+        setShowingAction,
       }}
     >
       {children}
