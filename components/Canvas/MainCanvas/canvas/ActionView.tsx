@@ -253,10 +253,11 @@ const ActionView = ({ action, canvasArea }: Props) => {
                 }}
                 onLongPress={drag}
               >
-                <ActionsItem {...item} disabled={true} />
+                <ActionsItem {...item} action={action} disabled={true} />
               </TouchableOpacity>
             );
           }}
+
           keyExtractor={(item: any, index) => item.id || index.toString()}
           onDragEnd={({ data }) => {
             setSprites((prev) => {

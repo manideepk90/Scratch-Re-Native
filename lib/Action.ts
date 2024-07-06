@@ -141,7 +141,7 @@ class Action {
   }
 
   public removeFunction(func: any): void {
-    this.functions = this.functions.filter((f: any) => f !== func);
+    this.functions = this.functions.filter((f: any) => f.id !== func.id);
   }
 
   public getMethods(): any {

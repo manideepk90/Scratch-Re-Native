@@ -54,6 +54,7 @@ const AvailableActions = [
     label2: "Y",
     value: 10,
     value2: 12,
+    type : "number",
     callback: (sprite: Sprite, refObject: any) => {
       sprite.setX(refObject.value);
       sprite.setY(refObject.value2);

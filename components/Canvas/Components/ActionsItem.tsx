@@ -1,4 +1,11 @@
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  Image,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import React, { useState } from "react";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
@@ -8,6 +15,8 @@ import Animated, {
 import { clamp } from "@/utils/utils";
 import { useMainContextProvider } from "@/hooks/MainContextProvider";
 import Sprite from "@/lib/Sprite";
+import Action from "@/lib/Action";
+import { deleteIcon } from "@/constants/icons";
 
 interface Props {
   label?: string;
@@ -23,6 +32,7 @@ interface Props {
   isInput?: boolean;
   endLabelMiddle?: string;
   canvasArea?: { width: number; height: number };
+  id: string;
 }
 
 const ActionsItem = ({
@@ -40,6 +50,7 @@ const ActionsItem = ({
   canvasArea,
   action,
   disabled = false,
+  id,
 }: any) => {
   const translationX = useSharedValue(0);
   const translationY = useSharedValue(0);
@@ -98,6 +109,69 @@ const ActionsItem = ({
     ],
   }));
 
+  const inputHandler1 = (e: any) => {
+    setSprites((prev) => {
+      return prev.map((sprite: Sprite) => {
+        if (sprite.getId() === selectedSprite?.getId()) {
+          sprite.getActions().map((ac: Action) => {
+            if (ac.getId() === action.getId()) {
+              ac.setMethods(
+                ac.getMethods().map((m: any) => {
+                  if (m.id === id) {
+                    m.value = Number.parseInt(e) || 0;
+                  }
+                  return m;
+                })
+              );
+            }
+            return ac;
+          });
+        }
+        return sprite;
+      });
+    });
+  };
+
+  const inputHandler12 = (e: any) => {
+    setSprites((prev) => {
+      return prev.map((sprite: Sprite) => {
+        if (sprite.getId() === selectedSprite?.getId()) {
+          sprite.getActions().map((ac: Action) => {
+            if (ac.getId() === action.getId()) {
+              ac.getMethods().map((m: any) => {
+                if (m.id === id) {
+                  m.value2 = Number.parseInt(e) || 0;
+                }
+              });
+            }
+            return ac;
+          });
+        }
+        return sprite;
+      });
+    });
+  };
+
+  const removeMethod = () => {
+    setSprites((prev) => {
+      return prev.map((sprite: Sprite) => {
+        if (sprite.getId() === selectedSprite?.getId()) {
+          sprite.getActions().map((ac: Action) => {
+            if (ac.getId() === action.getId()) {
+              ac.getMethods().map((m: any) => {
+                if (m.id === id) {
+                  ac.removeFunction(m);
+                }
+              });
+            }
+            return ac;
+          });
+        }
+        return sprite;
+      });
+    });
+  };
+
   return disabled ? (
     <View style={styles.container}>
       <Text style={styles.actionLabel}>{label}</Text>
@@ -106,7 +180,7 @@ const ActionsItem = ({
           style={styles.textInput}
           value={value1?.toString()}
           onChangeText={(e: any) => {
-            setValue && setValue(e);
+            inputHandler1(e);
           }}
           keyboardType={type === "text" ? "ascii-capable" : "numeric"}
         />
@@ -122,13 +196,26 @@ const ActionsItem = ({
             style={styles.textInput}
             value={value2?.toString()}
             onChangeText={(e: any) => {
-              setValue && setValue(e);
+              inputHandler12(e);
             }}
             keyboardType={type === "text" ? "ascii-capable" : "numeric"}
           />
         </>
       ) : null}
       <Text style={styles.actionLabel}>{endLabel}</Text>
+      <TouchableOpacity
+        onPress={removeMethod}
+        style={{
+          width: 30,
+          height: 30,
+          justifyContent: "center",
+          alignItems: "center",
+          borderRadius: 15,
+          backgroundColor: "white",
+        }}
+      >
+        <Image source={deleteIcon} style={{ width: 25, height: 25 }} />
+      </TouchableOpacity>
     </View>
   ) : (
     <GestureDetector gesture={pan}>
