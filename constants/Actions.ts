@@ -4,12 +4,23 @@ const AvailableActions = [
   {
     id: 1,
     actionType: "Motion",
-    label: "Move",
+    label: "Move X by",
     value: 10,
     endLabel: "steps",
     type: "number",
     callback: (sprite: Sprite, refObject: any, funcCallback: any) => {
       sprite.setX(sprite.getX() + refObject.value);
+    },
+  },
+  {
+    id: 16,
+    actionType: "Motion",
+    label: "Move Y by",
+    value: 10,
+    endLabel: "steps",
+    type: "number",
+    callback: (sprite: Sprite, refObject: any, funcCallback: any) => {
+      sprite.setY(sprite.getY() + refObject.value);
     },
   },
   {

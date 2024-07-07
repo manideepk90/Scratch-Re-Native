@@ -4,6 +4,8 @@ import Sprite from "@/lib/Sprite";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
+  withSpring,
+  withTiming,
 } from "react-native-reanimated";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { useMainContextProvider } from "@/hooks/MainContextProvider";
@@ -15,7 +17,7 @@ interface Props {
 }
 
 const SpriteView = ({ sprite, canvasArea }: Props) => {
-  const spriteSize = sprite.getSize();
+  const [spriteSize, setSpriteSize] = useState(sprite.getSize());
   const { sprites, setSprites, setSelectedSprite, selectedSprite } =
     useMainContextProvider();
   const [isInited, setIsInited] = useState(false);
@@ -25,25 +27,21 @@ const SpriteView = ({ sprite, canvasArea }: Props) => {
         width: "100%",
         height: "100%",
         resizeMode: "contain",
-        transform: [
-          {
-            rotate: `${sprite.getDirection().toString()}deg`,
-          },
-        ],
       },
       container: {
         zIndex: sprites.length - sprites.indexOf(sprite),
         position: "absolute",
-        width: sprite.getSize(),
-        height: sprite.getSize(),
       },
     });
-  }, [sprite.getDirection(), sprite.getSize(), sprites]);
+  }, [sprites]);
   const origin = getOrigin(canvasArea);
   const translationX = useSharedValue(sprite.getX());
   const translationY = useSharedValue(sprite.getY());
   const prevTranslationX = useSharedValue(sprite.getX());
   const prevTranslationY = useSharedValue(sprite.getY());
+  const direction = useSharedValue(sprite.getDirection());
+
+  const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
     translationX.value = origin.x + sprite.getX() - spriteSize / 2;
@@ -90,6 +88,7 @@ const SpriteView = ({ sprite, canvasArea }: Props) => {
       prevTranslationX.value = translationX.value;
       prevTranslationY.value = translationY.value;
       handleSelectedSprite();
+      setIsDragging(true);
     })
     .onUpdate((event) => {
       translationX.value = clamp(
@@ -104,6 +103,7 @@ const SpriteView = ({ sprite, canvasArea }: Props) => {
       );
     })
     .onEnd(() => {
+      setIsDragging(false);
       updateState(
         convertToXYCoordinates(
           translationX.value,
@@ -117,10 +117,29 @@ const SpriteView = ({ sprite, canvasArea }: Props) => {
 
   const animatedStyles = useAnimatedStyle(() => ({
     transform: [
-      { translateX: translationX.value },
-      { translateY: translationY.value },
+      {
+        translateX: isDragging
+          ? translationX.value
+          : withTiming(translationX.value),
+      },
+      {
+        translateY: isDragging
+          ? translationY.value
+          : withTiming(translationY.value),
+      },
+      {
+        rotate: `${direction.value}deg`,
+      },
     ],
+
+    width: withTiming(spriteSize, { duration: 150 }),
+    height: withTiming(spriteSize, { duration: 150 }),
   }));
+
+  useEffect(() => {
+    direction.value = sprite.getDirection();
+    setSpriteSize(sprite.getSize());
+  }, [sprite.getDirection(), sprite.getSize()]);
 
   return (
     <GestureDetector gesture={pan}>
