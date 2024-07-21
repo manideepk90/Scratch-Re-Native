@@ -2,6 +2,7 @@ import { Image, StyleSheet, TouchableOpacity, View, Text } from "react-native";
 import React, { useEffect, useMemo, useState } from "react";
 import Sprite from "@/lib/Sprite";
 import Animated, {
+  Easing,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
@@ -123,19 +124,19 @@ const SpriteView = ({ sprite, canvasArea }: Props) => {
       {
         translateX: isDragging
           ? translationX.value
-          : withTiming(translationX.value),
+          : withTiming(translationX.value, { easing: Easing.linear }),
       },
       {
         translateY: isDragging
           ? translationY.value
-          : withTiming(translationY.value),
+          : withTiming(translationY.value, { easing: Easing.linear }),
       },
       {
-        rotate: `${direction.value}deg`,
+        rotate: withTiming(`${direction.value}deg`, { easing: Easing.linear }),
       },
     ],
-    width: withTiming(spriteSize.value, { duration: 500 }),
-    height: withTiming(spriteSize.value, { duration: 500 }),
+    width: withTiming(spriteSize.value, { easing: Easing.linear }),
+    height: withTiming(spriteSize.value, { easing: Easing.linear }),
   }));
 
   return (

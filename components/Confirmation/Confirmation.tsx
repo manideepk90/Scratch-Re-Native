@@ -1,11 +1,12 @@
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React from "react";
+import React, { ReactNode } from "react";
 
 interface props {
   open: boolean;
   handleClose: (value: boolean) => void;
   handleConfirm: () => void;
   title?: string;
+  content?: ReactNode;
 }
 
 const Confirmation = ({
@@ -13,6 +14,7 @@ const Confirmation = ({
   handleClose,
   handleConfirm,
   title = "Are you sure you want to delete this sprite?",
+  content,
 }: props) => {
   return (
     <Modal
@@ -24,20 +26,24 @@ const Confirmation = ({
       <View style={styles.overlay}>
         <View style={styles.container}>
           <Text style={styles.title}>{title}</Text>
-          <View style={styles.buttons}>
-            <TouchableOpacity
-              onPress={handleConfirm}
-              style={[styles.button, styles.Acceptbutton]}
-            >
-              <Text style={styles.buttonText}>Yes</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => handleClose(false)}
-              style={styles.button}
-            >
-              <Text style={styles.buttonText}>No</Text>
-            </TouchableOpacity>
-          </View>
+          {content ? (
+            content
+          ) : (
+            <View style={styles.buttons}>
+              <TouchableOpacity
+                onPress={handleConfirm}
+                style={[styles.button, styles.Acceptbutton]}
+              >
+                <Text style={styles.buttonText}>Yes</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => handleClose(false)}
+                style={styles.button}
+              >
+                <Text style={styles.buttonText}>No</Text>
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
       </View>
     </Modal>

@@ -116,11 +116,91 @@ const RunPanel = () => {
           open={open}
           handleClose={setOpen}
           handleConfirm={() => {
-            setSelectedSprite(null);
-            setSprites([new Sprite(AvailableSprites[0])]);
-            setOpen(false);
+            // setSelectedSprite(null);
+            // setSprites([new Sprite(AvailableSprites[0])]);
+            // setOpen(false);
           }}
           title="Do you want to reset all"
+          content={
+            <View
+              style={{
+                // justifyContent: "center",
+                flexDirection: "column",
+                // alignItems : "center",
+                gap: 10,
+              }}
+            >
+              <TouchableOpacity
+                style={{
+                  backgroundColor: "red",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  borderRadius: 4,
+                  padding: 10,
+                }}
+                onPress={() => {
+                  // setSelectedSprite(null);
+                  setSprites((prev) =>
+                    prev.map((spr) => {
+                      spr.setActions([new Action({ name: "action-1" })]);
+                      return spr;
+                    })
+                  );
+                  setOpen(false);
+                }}
+              >
+                <Text
+                  style={{
+                    color: "white",
+                  }}
+                >
+                  Reset actions
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  backgroundColor: "red",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  borderRadius: 4,
+                  padding: 10,
+                }}
+                onPress={() => {
+                  setSelectedSprite(null);
+                  setSprites([new Sprite(AvailableSprites[0])]);
+                  setOpen(false);
+                }}
+              >
+                <Text
+                  style={{
+                    color: "white",
+                  }}
+                >
+                  Reset all canvas
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  backgroundColor: "#0090FF",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  borderRadius: 4,
+                  padding: 10,
+                }}
+                onPress={() => {
+                  setOpen(false);
+                }}
+              >
+                <Text
+                  style={{
+                    color: "white",
+                  }}
+                >
+                  Discard
+                </Text>
+              </TouchableOpacity>
+            </View>
+          }
         />
         <TouchableOpacity
           style={{
