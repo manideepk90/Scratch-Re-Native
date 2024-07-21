@@ -5,22 +5,61 @@ const AvailableActions = [
     id: 1,
     actionType: "Motion",
     label: "Move X by",
-    value: 10,
+    value: 100,
     endLabel: "steps",
     type: "number",
-    callback: (sprite: Sprite, refObject: any, funcCallback: any) => {
-      sprite.setX(sprite.getX() + refObject.value);
+    callback: async (sprite: Sprite, refObject: any, funcCallback: any) => {
+      const expectedValue = sprite.getX() + refObject.value;
+      const incrementValue = async () => {
+        return new Promise((resolve) => {
+          const currentX = sprite.getX();
+          if (currentX != expectedValue) {
+            const increment = refObject.value / 5;
+            sprite.setX(currentX + increment);
+            funcCallback(sprite);
+            setTimeout(async () => {
+              await incrementValue();
+              resolve(true);
+            }, 150);
+          } else {
+            resolve(true);
+          }
+        });
+      };
+
+      await incrementValue();
+      return true;
     },
   },
   {
     id: 16,
     actionType: "Motion",
     label: "Move Y by",
-    value: 10,
+    value: 100,
     endLabel: "steps",
     type: "number",
-    callback: (sprite: Sprite, refObject: any, funcCallback: any) => {
-      sprite.setY(sprite.getY() + refObject.value);
+    callback: async (sprite: Sprite, refObject: any, funcCallback: any) => {
+      const expectedValue = sprite.getY() + refObject.value;
+      const incrementValue = async () => {
+        return new Promise((resolve) => {
+          const currentX = sprite.getY();
+          if (currentX != expectedValue) {
+            const increment = refObject.value / 10;
+            sprite.setY(currentX + increment);
+            funcCallback(sprite);
+
+            setTimeout(async () => {
+              await incrementValue();
+              resolve(true);
+            }, 150);
+          } else {
+            resolve(true);
+          }
+        });
+      };
+
+      await incrementValue();
+      return true;
     },
   },
   {
@@ -30,8 +69,28 @@ const AvailableActions = [
     value: 15,
     endLabel: "degrees",
     type: "number",
-    callback: (sprite: Sprite, refObject: any, funcCallback: any) => {
-      sprite.setDirection(sprite.getDirection() + refObject.value);
+    callback: async (sprite: Sprite, refObject: any, funcCallback: any) => {
+      const expectedValue = sprite.getDirection() + refObject.value;
+      const incrementValue = async () => {
+        return new Promise((resolve) => {
+          const currentX = sprite.getDirection();
+          if (currentX != expectedValue) {
+            const increment = refObject.value / 10;
+            sprite.setDirection(currentX + increment);
+            funcCallback(sprite);
+
+            setTimeout(async () => {
+              await incrementValue();
+              resolve(true);
+            }, 150);
+          } else {
+            resolve(true);
+          }
+        });
+      };
+
+      await incrementValue();
+      return true;
     },
   },
   {
@@ -41,8 +100,28 @@ const AvailableActions = [
     value: "15",
     endLabel: "degrees",
     type: "number",
-    callback: (sprite: Sprite, refObject: any, funcCallback: any) => {
-      sprite.setDirection(sprite.getDirection() - refObject.value);
+    callback: async (sprite: Sprite, refObject: any, funcCallback: any) => {
+      const expectedValue = sprite.getDirection() - refObject.value;
+      const incrementValue = async () => {
+        return new Promise((resolve) => {
+          const currentX = sprite.getDirection();
+          if (currentX != expectedValue) {
+            const increment = refObject.value / 10;
+            sprite.setDirection(currentX - increment);
+            funcCallback(sprite);
+
+            setTimeout(async () => {
+              await incrementValue();
+              resolve(true);
+            }, 150);
+          } else {
+            resolve(true);
+          }
+        });
+      };
+
+      await incrementValue();
+      return true;
     },
   },
   {
@@ -52,9 +131,41 @@ const AvailableActions = [
     value: "Random",
     endLabel: "Position",
     type: "number",
-    callback: (sprite: Sprite, refObject: any, funcCallback: any) => {
-      sprite.setX(refObject.getRandomNumber(-180, 180));
-      sprite.setY(refObject.getRandomNumber(-180, 180));
+    callback: async (sprite: Sprite, refObject: any, funcCallback: any) => {
+      const expectedX = refObject.getRandomNumber(-180, 180);
+      const expectedY = refObject.getRandomNumber(-180, 180);
+
+      const incrementValue = async () => {
+        return new Promise((resolve) => {
+          const currentX = sprite.getX();
+          const currentY = sprite.getY();
+
+          if (
+            Math.abs(currentX - expectedX) > 1 ||
+            Math.abs(currentY - expectedY) > 1
+          ) {
+            const incrementX = (expectedX - currentX) / 10; // Move towards target
+            const incrementY = (expectedY - currentY) / 10; // Move towards target
+
+            sprite.setX(currentX + incrementX);
+            sprite.setY(currentY + incrementY);
+            funcCallback(sprite);
+
+            setTimeout(async () => {
+              await incrementValue(); // Continue incrementing
+              resolve(true); // Resolve after next increment
+            }, 150);
+          } else {
+            sprite.setX(expectedX); // Ensure it ends exactly at the target
+            sprite.setY(expectedY);
+            funcCallback(sprite);
+            resolve(true); // Resolve once target is reached
+          }
+        });
+      };
+
+      await incrementValue(); // Start the async loop
+      return true;
     },
   },
   {
@@ -65,8 +176,33 @@ const AvailableActions = [
     value1Disabled: true,
     endLabel: "degrees",
     type: "number",
-    callback: (sprite: Sprite, refObject: any, funcCallback: any) => {
-      sprite.setDirection(refObject.getRandomNumber(-180, 180));
+    callback: async (sprite: Sprite, refObject: any, funcCallback: any) => {
+      const expectedValue = refObject.getRandomNumber(-180, 180);
+
+      const incrementValue = async () => {
+        return new Promise((resolve) => {
+          const current = sprite.getDirection();
+
+          if (Math.abs(current - expectedValue) > 1) {
+            const increment = (expectedValue - current) / 10; // Move towards target
+
+            sprite.setDirection(current + increment);
+            funcCallback(sprite);
+
+            setTimeout(async () => {
+              await incrementValue(); // Continue incrementing
+              resolve(true); // Resolve after next increment
+            }, 150);
+          } else {
+            sprite.setDirection(expectedValue);
+            funcCallback(sprite);
+            resolve(true); // Resolve once target is reached
+          }
+        });
+      };
+
+      await incrementValue(); // Start the async loop
+      return true;
     },
   },
   {
@@ -78,9 +214,40 @@ const AvailableActions = [
     value: 10,
     value2: 12,
     type: "number",
-    callback: (sprite: Sprite, refObject: any, funcCallback: any) => {
-      sprite.setX(refObject.value);
-      sprite.setY(refObject.value2);
+    callback: async (sprite: Sprite, refObject: any, funcCallback: any) => {
+      const expectedX = refObject.value;
+      const expectedY = refObject.value2;
+      const incrementValue = async () => {
+        return new Promise((resolve) => {
+          const currentX = sprite.getX();
+          const currentY = sprite.getY();
+
+          if (
+            Math.abs(currentX - expectedX) > 1 ||
+            Math.abs(currentY - expectedY) > 1
+          ) {
+            const incrementX = (expectedX - currentX) / 10; // Move towards target
+            const incrementY = (expectedY - currentY) / 10; // Move towards target
+
+            sprite.setX(currentX + incrementX);
+            sprite.setY(currentY + incrementY);
+            funcCallback(sprite);
+
+            setTimeout(async () => {
+              await incrementValue(); // Continue incrementing
+              resolve(true); // Resolve after next increment
+            }, 100);
+          } else {
+            sprite.setX(expectedX); // Ensure it ends exactly at the target
+            sprite.setY(expectedY);
+            funcCallback(sprite);
+            resolve(true); // Resolve once target is reached
+          }
+        });
+      };
+
+      await incrementValue(); // Start the async loop
+      return true;
     },
   },
   {
@@ -88,8 +255,15 @@ const AvailableActions = [
     actionType: "Looks",
     label: "Say",
     value: "Hello",
-    callback: (sprite: Sprite, refObject: any, funcCallback: any) => {
-      sprite.setThinking(false).setMessage(refObject.value);
+    callback: async (sprite: Sprite, refObject: any, funcCallback: any) => {
+      await new Promise((resolve) => {
+        setTimeout(() => {
+          sprite.setThinking(false).setMessage(refObject.value);
+          funcCallback(sprite);
+          resolve(true);
+        }, 500);
+      });
+      return true;
     },
   },
   {
@@ -101,15 +275,22 @@ const AvailableActions = [
     input: 2,
     label2: "For",
     value2: 2,
-    callback: (sprite: Sprite, refObject: any, funcCallback: any) => {
-      sprite
-        .setThinking(false)
-        .setMessage(
-          refObject.value,
-          true,
-          refObject.value2 * 1000,
-          funcCallback
-        );
+    callback: async (sprite: Sprite, refObject: any, funcCallback: any) => {
+      await new Promise((resolve) => {
+        setTimeout(() => {
+          sprite
+            .setThinking(false)
+            .setMessage(
+              refObject.value,
+              true,
+              refObject.value2 * 1000,
+              funcCallback
+            );
+          funcCallback(sprite);
+          resolve(true);
+        }, 500);
+      });
+      return true;
     },
   },
   {
@@ -121,15 +302,22 @@ const AvailableActions = [
     input: 2,
     label2: "For",
     value2: 2,
-    callback: (sprite: Sprite, refObject: any, funcCallback: any) => {
-      sprite
-        .setThinking(true)
-        .setMessage(
-          refObject.value,
-          true,
-          refObject.value2 * 1000,
-          funcCallback
-        );
+    callback: async (sprite: Sprite, refObject: any, funcCallback: any) => {
+      await new Promise((resolve) => {
+        setTimeout(() => {
+          sprite
+            .setThinking(true)
+            .setMessage(
+              refObject.value,
+              true,
+              refObject.value2 * 1000,
+              funcCallback
+            );
+          funcCallback(sprite);
+          resolve(true);
+        }, 500);
+      });
+      return true;
     },
   },
   {
@@ -137,8 +325,15 @@ const AvailableActions = [
     actionType: "Looks",
     label: "Think",
     value: "Hello",
-    callback: (sprite: Sprite, refObject: any, funcCallback: any) => {
-      sprite.setThinking(true).setMessage(refObject.value);
+    callback: async (sprite: Sprite, refObject: any, funcCallback: any) => {
+      await new Promise((resolve) => {
+        setTimeout(() => {
+          sprite.setThinking(true).setMessage(refObject.value);
+          funcCallback(sprite);
+          resolve(true);
+        }, 500);
+      });
+      return true;
     },
   },
   // {
@@ -155,8 +350,28 @@ const AvailableActions = [
     value: 2,
     endLabel: "",
     type: "number",
-    callback: (sprite: Sprite, refObject: any, funcCallback: any) => {
-      sprite.setSize(sprite.getSize() * refObject.value);
+    callback: async (sprite: Sprite, refObject: any, funcCallback: any) => {
+      const expectedValue = sprite.getSize() * refObject.value;
+      const incrementValue = async () => {
+        return new Promise((resolve) => {
+          const currentX = sprite.getSize();
+          if (currentX != expectedValue) {
+            const increment = refObject.value / 10;
+            sprite.setSize(currentX - increment);
+            funcCallback(sprite);
+
+            setTimeout(async () => {
+              await incrementValue();
+              resolve(true);
+            }, 100);
+          } else {
+            resolve(true);
+          }
+        });
+      };
+
+      await incrementValue();
+      return true;
     },
   },
   {
@@ -166,8 +381,28 @@ const AvailableActions = [
     value: 10,
     endLabel: "%",
     type: "number",
-    callback: (sprite: Sprite, refObject: any, funcCallback: any) => {
-      sprite.setSize(sprite.getSize() * (refObject.value / 100));
+    callback: async (sprite: Sprite, refObject: any, funcCallback: any) => {
+      const expectedValue = sprite.getSize() * (refObject.value / 100);
+      const incrementValue = async () => {
+        return new Promise((resolve) => {
+          const currentX = sprite.getSize();
+          if (currentX != expectedValue) {
+            const increment = refObject.value / 10;
+            sprite.setSize(currentX - increment);
+            funcCallback(sprite);
+
+            setTimeout(async () => {
+              await incrementValue();
+              resolve(true);
+            }, 150);
+          } else {
+            resolve(true);
+          }
+        });
+      };
+
+      await incrementValue();
+      return true;
     },
   },
   { id: 1, actionType: "Events", label: "When Flag Clicked", value: "Flag" },

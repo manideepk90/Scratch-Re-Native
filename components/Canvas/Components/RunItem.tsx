@@ -6,15 +6,17 @@ import Action from "@/lib/Action";
 interface props {
   onclick?: (action: Action) => void;
   action: Action;
+  longPress: () => void;
 }
 
-const RunItem = ({ action, onclick }: props) => {
+const RunItem = ({ action, onclick, longPress }: props) => {
   return (
     <TouchableOpacity
       style={styles.container}
       onPress={() => {
         onclick && onclick(action);
       }}
+      onLongPress={longPress}
     >
       <Text style={styles.actionLabel}>{action.getName()}</Text>
     </TouchableOpacity>

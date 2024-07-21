@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
 import React from "react";
 import PropertiesPanel from "../../Components/PropertiesPanel";
 import RunPanel from "../../Components/RunPanel";
@@ -10,9 +10,9 @@ const Preview = () => {
   return (
     <View style={styles.container}>
       <PreviewCanvas />
+      <RunPanel />
       {selectedSprite && (
         <>
-          {selectedSprite.getActions().length > 0 && <RunPanel />}
           <PropertiesPanel />
         </>
       )}

@@ -25,6 +25,7 @@ function TopAppBar({ isBack = false }: props) {
       <View>
         <Image style={styles.textLogo} source={textLogo} />
       </View>
+
       <View style={styles.backdrop}>
         <IconPreview />
       </View>

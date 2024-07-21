@@ -4,7 +4,6 @@ import Sprite from "@/lib/Sprite";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
-  withSpring,
   withTiming,
 } from "react-native-reanimated";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
@@ -17,7 +16,7 @@ interface Props {
 }
 
 const SpriteView = ({ sprite, canvasArea }: Props) => {
-  const [spriteSize, setSpriteSize] = useState(sprite.getSize());
+  // const [spriteSize, setSpriteSize] = useState(sprite.getSize());
   const { sprites, setSprites, setSelectedSprite, selectedSprite } =
     useMainContextProvider();
   const [isInited, setIsInited] = useState(false);
@@ -40,15 +39,20 @@ const SpriteView = ({ sprite, canvasArea }: Props) => {
   const prevTranslationX = useSharedValue(sprite.getX());
   const prevTranslationY = useSharedValue(sprite.getY());
   const direction = useSharedValue(sprite.getDirection());
-
+  const spriteSize = useSharedValue(sprite.getSize());
   const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
-    translationX.value = origin.x + sprite.getX() - spriteSize / 2;
-    translationY.value = origin.y + sprite.getY() - spriteSize / 2;
+    translationX.value = origin.x + sprite.getX() - spriteSize.value / 2;
+    translationY.value = origin.y + sprite.getY() - spriteSize.value / 2;
     prevTranslationX.value = translationX.value;
     prevTranslationY.value = translationY.value;
   }, [sprite.getX(), sprite.getY()]);
+
+  useEffect(() => {
+    direction.value = sprite.getDirection();
+    spriteSize.value = sprite.getSize();
+  }, [sprite.getDirection(), sprite.getSize()]);
 
   const handleSelectedSprite = () => {
     if (sprite.getId() === selectedSprite?.getId()) return;
@@ -57,10 +61,9 @@ const SpriteView = ({ sprite, canvasArea }: Props) => {
 
   const initializeTranslations = () => {
     if (isInited) return;
-
     if (origin.x === 0 && origin.y === 0) return;
-    translationX.value = origin.x + sprite.getX() - spriteSize / 2;
-    translationY.value = origin.y + sprite.getY() - spriteSize / 2;
+    translationX.value = origin.x + sprite.getX() - spriteSize.value / 2;
+    translationY.value = origin.y + sprite.getY() - spriteSize.value / 2;
     prevTranslationX.value = translationX.value;
     prevTranslationY.value = translationY.value;
     setIsInited(true);
@@ -94,12 +97,12 @@ const SpriteView = ({ sprite, canvasArea }: Props) => {
       translationX.value = clamp(
         prevTranslationX.value + event.translationX,
         0,
-        canvasArea.width - spriteSize
+        canvasArea.width - spriteSize.value
       );
       translationY.value = clamp(
         prevTranslationY.value + event.translationY,
         0,
-        canvasArea.height - spriteSize
+        canvasArea.height - spriteSize.value
       );
     })
     .onEnd(() => {
@@ -109,7 +112,7 @@ const SpriteView = ({ sprite, canvasArea }: Props) => {
           translationX.value,
           translationY.value,
           canvasArea,
-          spriteSize
+          spriteSize.value
         )
       );
     })
@@ -131,15 +134,9 @@ const SpriteView = ({ sprite, canvasArea }: Props) => {
         rotate: `${direction.value}deg`,
       },
     ],
-
-    width: withTiming(spriteSize, { duration: 150 }),
-    height: withTiming(spriteSize, { duration: 150 }),
+    width: withTiming(spriteSize.value, { duration: 500 }),
+    height: withTiming(spriteSize.value, { duration: 500 }),
   }));
-
-  useEffect(() => {
-    direction.value = sprite.getDirection();
-    setSpriteSize(sprite.getSize());
-  }, [sprite.getDirection(), sprite.getSize()]);
 
   return (
     <GestureDetector gesture={pan}>

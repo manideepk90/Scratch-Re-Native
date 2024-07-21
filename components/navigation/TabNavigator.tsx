@@ -50,8 +50,8 @@ const TabNavigator = () => {
               style={{
                 backgroundColor: "#2196F3",
                 paddingHorizontal: 35,
-                // flex: 1,
-                minHeight: 60,
+                flex: 1,
+                minHeight: 46,
                 borderRadius: 5,
                 alignItems: "center",
                 justifyContent: "center",
@@ -70,7 +70,7 @@ const TabNavigator = () => {
           ) : (
             <Text
               style={{
-                fontSize: 20,
+                fontSize: 16,
                 fontWeight: "bold",
               }}
             >

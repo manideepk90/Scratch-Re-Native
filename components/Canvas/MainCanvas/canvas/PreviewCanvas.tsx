@@ -1,13 +1,22 @@
-import { LayoutChangeEvent, StyleSheet, Text, View } from "react-native";
+import {
+  LayoutChangeEvent,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import React, { useState } from "react";
-import IconPreview from "./IconPreview";
 import SpriteView from "./SpriteView";
 import { useMainContextProvider } from "@/hooks/MainContextProvider";
 import Sprite from "@/lib/Sprite";
 import { ScrollView } from "react-native-gesture-handler";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { faReplyAll } from "@fortawesome/free-solid-svg-icons";
+import Confirmation from "@/components/Confirmation/Confirmation";
+import AvailableSprites from "@/constants/AvailableSprites";
 
 const PreviewCanvas = () => {
-  const { sprites } = useMainContextProvider();
+  const { sprites, setSelectedSprite, setSprites } = useMainContextProvider();
   const [canvasArea, setCanvasArea] = useState({
     width: 0,
     height: 0,
