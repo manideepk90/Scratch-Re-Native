@@ -28,6 +28,8 @@ const RunPanel = () => {
       });
     });
   };
+
+  
   const runMethods = async (sprite: Sprite) => {
     const actions = sprite?.getActions();
     if (actions)
@@ -85,6 +87,7 @@ const RunPanel = () => {
   //   },
   //   [sprites, selectedSprite]
   // );
+
   const renderItem = ({
     item,
     drag,
@@ -109,8 +112,6 @@ const RunPanel = () => {
 
   return (
     <View style={styles.container}>
-      {/* <ScrollView horizontal style={{ height: 56 }}> */}
-
       <View style={styles.scrollView}>
         <Confirmation
           open={open}
@@ -258,7 +259,7 @@ const RunPanel = () => {
             <RunItem key={index} action={action} onclick={runAction} />
           ))} */}
       </View>
-      {/* </ScrollView> */}
+    
     </View>
   );
 };
