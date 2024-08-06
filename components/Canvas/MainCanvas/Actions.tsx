@@ -1,6 +1,6 @@
 import { LayoutChangeEvent, StyleSheet, View } from "react-native";
 import React, { useState } from "react";
-import CodePanel from "../../Components/CodePanel";
+import CodePanel from "../Components/CodePanel";
 import ActionsCanvas from "./ActionsCanvas";
 
 const Actions = () => {

@@ -7,33 +7,17 @@ import { router } from "expo-router";
 
 const TabNavigator = () => {
   const { selectedSprite, sprites } = useMainContextProvider();
-  const styles = StyleSheet.create({
-    container: {
-      width: "100%",
-      flexDirection: "row",
-      justifyContent: selectedSprite !== null ? "space-between" : "flex-end",
-      alignItems: "center",
-      backgroundColor: "#FDE4BE",
-      height: 50,
-      gap: 4,
-      margin: 4,
-      borderRadius: 4,
-    },
-    spriteContainer: {
-      flex: 1,
-      maxHeight: 50,
-      width: "100%",
-      backgroundColor: "#FDE4BE",
-      padding: 5,
-      flexDirection: "row",
-      alignItems: "center",
-      gap: 10,
-      borderRadius: 4,
-      justifyContent: "center",
-    },
-  });
+
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        {
+          justifyContent:
+            selectedSprite !== null ? "space-between" : "flex-end",
+        },
+      ]}
+    >
       {selectedSprite !== null ? (
         <>
           <TabItem label={"Preview"} path={"preview"} />
@@ -82,5 +66,30 @@ const TabNavigator = () => {
     </View>
   );
 };
+const styles = StyleSheet.create({
+  container: {
+    width: "100%",
+    flexDirection: "row",
+
+    alignItems: "center",
+    backgroundColor: "#FDE4BE",
+    height: 50,
+    gap: 4,
+    margin: 4,
+    borderRadius: 4,
+  },
+  spriteContainer: {
+    flex: 1,
+    maxHeight: 50,
+    width: "100%",
+    backgroundColor: "#FDE4BE",
+    padding: 5,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    borderRadius: 4,
+    justifyContent: "center",
+  },
+});
 
 export default TabNavigator;

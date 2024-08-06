@@ -10,7 +10,7 @@ import { useMainContextProvider } from "@/hooks/MainContextProvider";
 import Line from "@/components/UtilComponent/VerticalLine";
 import { clamp, convertToXYCoordinates, getOrigin } from "@/utils/utils";
 import InputBox from "@/components/Confirmation/InputBox";
-import ActionsItem from "../../Components/ActionsItem";
+import ActionsItem from "../Components/ActionsItem";
 import DraggableFlatList from "react-native-draggable-flatlist";
 import { deleteIcon } from "@/constants/icons";
 import Confirmation from "@/components/Confirmation/Confirmation";

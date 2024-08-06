@@ -1,7 +1,8 @@
 import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
-import { getTabContext } from "../Canvas/MainCanvas/CanvasTabContext";
+import { getTabContext } from "../../hooks/CanvasTabContext";
 
+// display tab in canvas panel
 const TabItem = ({
   label = "Tab",
   path = "/",

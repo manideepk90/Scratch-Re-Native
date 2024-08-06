@@ -2,7 +2,7 @@ import { backIcon, menuIcon, textLogo } from "@/constants/icons";
 import { router } from "expo-router";
 import React from "react";
 import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
-import IconPreview from "../Canvas/MainCanvas/canvas/IconPreview";
+import IconPreview from "../Canvas/MainCanvas/IconPreview";
 
 interface props {
   isBack?: boolean;

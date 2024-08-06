@@ -13,7 +13,7 @@ interface props {
 const PropertiesItem = ({
   label = "Property",
   type = "text",
-  value,
+  value = "",
   setValue,
   handleSave,
 }: props) => {
@@ -30,7 +30,7 @@ const PropertiesItem = ({
       <InputBox
         title={label}
         open={open}
-        type={type}
+        type={type as "number" | "text" | undefined}
         handleClose={setOpen}
         value={value}
         setValue={setValue}

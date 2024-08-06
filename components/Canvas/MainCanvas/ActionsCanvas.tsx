@@ -4,7 +4,7 @@ import ActionView from "./ActionView";
 import { ScrollView } from "react-native-gesture-handler";
 import { useMainContextProvider } from "@/hooks/MainContextProvider";
 import Action from "@/lib/Action";
-import AddAction from "../../Components/AddAction";
+import AddAction from "../Components/AddAction";
 
 interface props {
   canvasArea: { width: number; height: number };

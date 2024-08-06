@@ -1,7 +1,7 @@
 import { View, StyleSheet } from "react-native";
 import React from "react";
-import PropertiesPanel from "../../Components/PropertiesPanel";
-import RunPanel from "../../Components/RunPanel";
+import PropertiesPanel from "../Components/PropertiesPanel";
+import RunPanel from "../Components/RunPanel";
 import PreviewCanvas from "./PreviewCanvas";
 import { useMainContextProvider } from "@/hooks/MainContextProvider";
 

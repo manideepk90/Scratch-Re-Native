@@ -1,7 +1,7 @@
 import { StyleSheet, View } from "react-native";
 import React from "react";
-import CanvasTabProvider from "./MainCanvas/CanvasTabContext";
-import PanelView from "./MainCanvas/canvas/PanelView";
+import CanvasTabProvider from "../../hooks/CanvasTabContext";
+import PanelView from "./MainCanvas/PanelView";
 import TabNavigator from "../navigation/TabNavigator";
 
 function CanvasView() {
