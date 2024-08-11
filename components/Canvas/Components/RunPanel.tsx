@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import RunItem from "./RunItem";
 import { useMainContextProvider } from "@/hooks/MainContextProvider";
 import Action from "@/lib/Action";
@@ -18,75 +18,55 @@ const RunPanel = () => {
     useMainContextProvider();
 
   // for time controlled changed
-  const updateSprite = (sprite: Sprite) => {
-    setSprites((prev) => {
-      return prev.map((s) => {
-        if (s.getId() === sprite.getId()) {
-          return sprite;
-        }
-        return s;
-      });
-    });
-  };
 
-  
-  const runMethods = async (sprite: Sprite) => {
-    const actions = sprite?.getActions();
-    if (actions)
+  const updateSprite = useCallback(
+    (sprite: Sprite) => {
+      setSprites((prev) =>
+        prev.map((s) => (s.getId() === sprite.getId() ? sprite : s))
+      );
+    },
+    [setSprites]
+  );
+
+  const runMethods = useCallback(
+    async (sprite: Sprite) => {
+      const actions = sprite?.getActions();
+      if (!actions) return;
+
       for (const ac of actions) {
         for (const runAction of ac.getMethods()) {
-          await runAction.callback(sprite, runAction, (e: Sprite) => {
-            updateSprite(e);
-          });
+          try {
+            await runAction.callback(sprite, runAction, updateSprite);
+          } catch (error) {
+            console.error("Error executing action method:", error);
+          }
         }
       }
-  };
+    },
+    [updateSprite]
+  );
   // Handler to run all actions as well as to run one by one
-  const runAction = async (action: Action | any, all = false) => {
-    if (all) {
-      for (const sprite of sprites) {
-        runMethods(sprite);
-      }
-    } else {
-      if (Object.keys(action).length != 0) {
+  const runAction = useCallback(
+    async (action: Action | any, all = false) => {
+      if (all) {
+        for (const sprite of sprites) {
+          // await runMethods(sprite);  // for running one after other
+          runMethods(sprite);
+        }
+      } else if (Object.keys(action).length > 0) {
         for (const runAction of action.getMethods()) {
-          await runAction.callback(selectedSprite, runAction, (e: Sprite) => {
-            updateSprite(e);
-          });
+          try {
+            await runAction.callback(selectedSprite, runAction, updateSprite);
+          } catch (error) {
+            console.error("Error executing selected action method:", error);
+          }
         }
-      } else {
-        if (selectedSprite) {
-          await runMethods(selectedSprite);
-        }
+      } else if (selectedSprite) {
+        await runMethods(selectedSprite);
       }
-    }
-  };
-
-  // const runAction = useCallback(
-  //   (action: Action) => {
-  //     const actions = sprites
-  //       .find((sprite) => sprite.getId() === selectedSprite?.getId())
-  //       ?.getActions();
-  //     actions?.map((ac) => {
-
-  //     });
-  //     // setSprites((prev) => {
-  //     //   return prev.map((sprite) => {
-  //     //     if (sprite.getId() === selectedSprite?.getId()) {
-  //     //       sprite.getActions().map((ac) => {
-  //     //         if (ac.getId() === action.getId()) {
-  //     //           ac.runAction(sprite, (e: any) => {
-  //     //             updateSprite(e);
-  //     //           });
-  //     //         }
-  //     //       });
-  //     //     }
-  //     //     return sprite;
-  //     //   });
-  //     // });
-  //   },
-  //   [sprites, selectedSprite]
-  // );
+    },
+    [sprites, selectedSprite, runMethods, updateSprite]
+  );
 
   const renderItem = ({
     item,
@@ -259,7 +239,6 @@ const RunPanel = () => {
             <RunItem key={index} action={action} onclick={runAction} />
           ))} */}
       </View>
-    
     </View>
   );
 };

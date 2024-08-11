@@ -7,6 +7,7 @@ import React, {
   SetStateAction,
   useCallback,
   useContext,
+  useMemo,
   useState,
 } from "react";
 
@@ -44,7 +45,7 @@ const MainContextProvider = ({ children }: { children: ReactNode }) => {
   ]);
   const [showingAction, setShowingAction] = useState(0);
   const [selectedSprite, setSelectedSprite] = useState<Sprite | null>(
-    sprites[0]
+    sprites.length > 0 ? sprites[0] : null
   );
 
   const deleteSprite = (sprite: Sprite | undefined) => {
@@ -64,22 +65,23 @@ const MainContextProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [sprites]);
 
+  const contextValue = useMemo(
+    () => ({
+      sprites,
+      setSprites,
+      selectedSprite,
+      setSelectedSprite,
+      setDefaultSelection,
+      deleteSprite,
+      addSprite,
+      showingAction,
+      setShowingAction,
+    }),
+    [sprites, selectedSprite, setDefaultSelection, showingAction]
+  );
+
   return (
-    <MainContext.Provider
-      value={{
-        sprites,
-        setSprites,
-        selectedSprite,
-        setSelectedSprite,
-        setDefaultSelection,
-        deleteSprite,
-        addSprite,
-        showingAction,
-        setShowingAction,
-      }}
-    >
-      {children}
-    </MainContext.Provider>
+    <MainContext.Provider value={contextValue}>{children}</MainContext.Provider>
   );
 };
 
